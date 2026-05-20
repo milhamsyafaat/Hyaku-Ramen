@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyaku Ramen - Restoran Ramen Terbaik di Depok</title>
+    <meta name="description" content="Hyaku Ramen di Kukusan, Depok. Nikmati ramen autentik dengan cita rasa Jepang. Buka setiap hari 10.00-22.00. Rating 4.9 dari 89 ulasan.">
+    <meta name="theme-color" content="#b91c1c">
+    <link rel="canonical" href="https://hyakuramen.depok.id/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Hyaku Ramen - Restoran Ramen Terbaik di Depok">
+    <meta property="og:description" content="Ramen autentik dengan cita rasa Jepang. Buka setiap hari 10.00-22.00. Rating 4.9.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80">
+    <meta property="og:type" content="restaurant">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hyaku Ramen - Restoran Ramen Terbaik di Depok">
+    <meta name="twitter:description" content="Ramen autentik dengan cita rasa Jepang. Buka setiap hari 10.00-22.00. Rating 4.9.">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://images.unsplash.com">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Hyaku Ramen",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+        "url": "https://hyakuramen.depok.id/",
+        "telephone": "+6285174074352",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Jl. H. Amat No.15, Kukusan",
+            "addressLocality": "Kecamatan Beji, Kota Depok",
+            "addressRegion": "Jawa Barat",
+            "postalCode": "16425",
+            "addressCountry": "ID"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "89"
+        },
+        "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+            "opens": "10:00",
+            "closes": "22:00"
+        },
+        "servesCuisine": ["Ramen","Japanese"],
+        "priceRange": "Rp 25.000 - 50.000"
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans transition-colors duration-300">
+
+    <!-- Skip to content (a11y) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-red-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none no-print">
+        Langsung ke konten utama
+    </a>
+
+    <!-- Scroll Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 z-[60] no-print">
+        <div id="scrollProgress" class="scroll-progress h-full bg-red-600 w-0 transition-all duration-100"></div>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 no-print" role="banner">
+        <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16 md:h-20">
+            <a href="#" class="flex items-center gap-2 text-white font-bold text-lg md:text-xl tracking-wide">
+                <i class="fas fa-egg text-yellow-300"></i>
+                <span>Hyaku Ramen</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <!-- Desktop nav -->
+                <nav class="hidden md:flex items-center gap-1" aria-label="Navigasi utama">
+                    <a href="#tentang" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white rounded-full hover:bg-white/10 transition">Tentang</a>
+                    <a href="#menu" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white rounded-full hover:bg-white/10 transition">Menu</a>
+                    <a href="#galeri" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white rounded-full hover:bg-white/10 transition">Galeri</a>
+                    <a href="#testimoni" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white rounded-full hover:bg-white/10 transition">Testimoni</a>
+                    <a href="#reservasi" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white rounded-full hover:bg-white/10 transition">Reservasi</a>
+                    <a href="#kontak" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white rounded-full hover:bg-white/10 transition">Kontak</a>
+                </nav>
+                <!-- Cart -->
+                <button id="cartBtn" class="relative w-9 h-9 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-full transition" aria-label="Keranjang belanja">
+                    <i class="fas fa-shopping-cart text-sm"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden font-bold">0</span>
+                </button>
+                <!-- Dark mode toggle -->
+                <button id="darkToggle" class="w-9 h-9 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-full transition" aria-label="Toggle dark mode">
+                    <i id="darkIcon" class="fas fa-moon text-sm"></i>
+                </button>
+                <!-- Hamburger -->
+                <button id="hamburgerBtn" class="md:hidden w-9 h-9 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 transition" aria-label="Buka menu navigasi" aria-expanded="false">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile nav overlay -->
+    <div id="navOverlay" class="nav-overlay fixed inset-0 z-40 bg-black/50 no-print" aria-hidden="true"></div>
+
+    <!-- Mobile nav drawer -->
+    <aside id="navDrawer" class="nav-drawer fixed top-0 right-0 bottom-0 z-50 w-72 bg-white dark:bg-gray-800 shadow-2xl no-print" role="dialog" aria-label="Menu navigasi mobile" aria-hidden="true">
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <span class="font-bold text-gray-900 dark:text-gray-100">Menu</span>
+            <button id="navDrawerClose" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition" aria-label="Tutup menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col p-4 gap-1" aria-label="Navigasi mobile">
+            <a href="#tentang" class="mobile-nav-link px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 font-medium transition">Tentang</a>
+            <a href="#menu" class="mobile-nav-link px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 font-medium transition">Menu</a>
+            <a href="#galeri" class="mobile-nav-link px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 font-medium transition">Galeri</a>
+            <a href="#testimoni" class="mobile-nav-link px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 font-medium transition">Testimoni</a>
+            <a href="#reservasi" class="mobile-nav-link px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 font-medium transition">Reservasi</a>
+            <a href="#faq" class="mobile-nav-link px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 font-medium transition">FAQ</a>
+            <a href="#kontak" class="mobile-nav-link px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 font-medium transition">Kontak</a>
+            <hr class="my-3 border-gray-200 dark:border-gray-700">
+            <a href="https://wa.me/6285174074352" target="_blank" class="px-4 py-3 rounded-xl bg-green-500 hover:bg-green-600 text-white font-semibold text-center transition flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp"></i> Chat WhatsApp
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="relative min-h-[85vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden" aria-label="Hero">
+        <!-- Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-red-800 via-red-700 to-red-900 dark:from-gray-950 dark:via-red-950 dark:to-gray-950"></div>
+        <div class="absolute inset-0 opacity-20 dark:opacity-10" style="background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center;"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-red-900/60 via-transparent to-transparent"></div>
+        <!-- Decorative circle -->
+        <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-red-500/20 blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-yellow-500/10 blur-3xl"></div>
+
+        <div class="relative z-10 max-w-4xl mx-auto px-4 text-center text-white py-20">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6 animate-slide-up">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span>Rating 4.9 &bull; 89 Ulasan Google</span>
+            </div>
+            <h1 class="hero-title text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-4 drop-shadow-lg">
+                Rasakan Kenikmatan
+                <span class="text-yellow-300">Ramen</span> Autentik
+            </h1>
+            <p class="text-base md:text-lg text-red-100/80 max-w-2xl mx-auto mb-8 drop-shadow">
+                Hyaku Ramen menghadirkan cita rasa Jepang asli di Kukusan, Depok. 
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="#menu" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-bold px-6 py-3 rounded-full transition shadow-lg hover:shadow-xl">
+                    <i class="fas fa-utensils"></i> Lihat Menu
+                </a>
+                <a href="https://wa.me/6285174074352" target="_blank" class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-full transition border border-white/20">
+                    <i class="fab fa-whatsapp"></i> Pesan Sekarang
+                </a>
+            </div>
+        </div>
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 animate-bounce no-print">
+            <i class="fas fa-chevron-down text-xl"></i>
+        </div>
+    </section>
+
+    <main id="main-content" class="max-w-6xl mx-auto px-4 py-8 md:py-12 space-y-10 md:space-y-16">
+
+        <!-- ===== STATS BAR ===== -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4 scroll-animate" aria-label="Statistik restoran">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm text-center">
+                <p class="text-2xl md:text-3xl font-extrabold text-red-600 dark:text-red-400">4.9</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><i class="fas fa-star text-yellow-400 mr-1"></i>Rating Google</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm text-center">
+                <p class="text-2xl md:text-3xl font-extrabold text-red-600 dark:text-red-400">89+</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><i class="fas fa-comment text-blue-500 mr-1"></i>Ulasan</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm text-center">
+                <p class="text-2xl md:text-3xl font-extrabold text-red-600 dark:text-red-400">50</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><i class="fas fa-users text-green-500 mr-1"></i>Kapasitas Duduk</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm text-center">
+                <p class="text-2xl md:text-3xl font-extrabold text-red-600 dark:text-red-400">10+</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><i class="fas fa-wine-bottle text-purple-500 mr-1"></i>Varian Menu</p>
+            </div>
+        </section>
+
+        <!-- ===== QUICK ACTIONS ===== -->
+        <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 scroll-animate" aria-label="Aksi cepat">
+            <a href="https://www.google.com/maps/place/Hyaku+Ramen/@-6.359917,106.8170113,964m/data=!3m2!1e3!4b1!4m6!3m5!1s0x2e69ed967fc4b1db:0x23ce4811a5ed91f4!8m2!3d-6.3599223!4d106.8195862!16s%2Fg%2F11l1n29lrt?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
+                <i class="fas fa-route text-red-600 text-xl mb-1"></i>
+                <span class="text-xs font-medium">Rute</span>
+            </a>
+            <button id="saveBtn" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
+                <i id="saveIcon" class="far fa-bookmark text-red-600 text-xl mb-1"></i>
+                <span class="text-xs font-medium">Simpan</span>
+            </button>
+            <a href="tel:+6285174074352" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
+                <i class="fas fa-phone text-red-600 text-xl mb-1"></i>
+                <span class="text-xs font-medium">Hubungi</span>
+            </a>
+            <button id="shareBtn" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
+                <i class="fas fa-share-alt text-red-600 text-xl mb-1"></i>
+                <span class="text-xs font-medium">Bagikan</span>
+            </button>
+        </section>
+
+        <!-- ===== TENTANG / INFO ===== -->
+        <section id="tentang" class="scroll-animate">
+            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 flex-shrink-0">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Tentang Hyaku Ramen</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Informasi lengkap restoran</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-red-500 mt-0.5 text-base w-5 text-center flex-shrink-0"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-gray-200">Alamat Lengkap:</p>
+                                <p>Jl. H. Amat No.15, Kukusan, Kecamatan Beji, Kota Depok, Jawa Barat 16425</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Kode Plus: JRR9+2R Kukusan, Kota Depok</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-clock text-purple-500 text-base w-5 text-center flex-shrink-0"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-gray-200">Jam Operasional</p>
+                                <p>Senin &ndash; Minggu: 10.00 &ndash; 22.00</p>
+                                <p id="statusTextMobile" class="text-xs mt-1"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-user-friends text-blue-500 text-base w-5 text-center flex-shrink-0"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-gray-200">Kapasitas</p>
+                                <p>Duduk hingga 50 orang &bull; Cocok untuk grup</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-green-500 text-base w-5 text-center flex-shrink-0"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-gray-200">Telepon</p>
+                                <a href="tel:+6285174074352" class="text-red-600 dark:text-red-400 hover:underline">+62 851-7407-4352</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 rounded-lg text-xs font-medium">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Tips: Sangat direkomendasikan datang menggunakan sepeda motor.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment badges -->
+                <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-100 dark:border-gray-700">
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Pembayaran:</span>
+                    <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full"><i class="fas fa-money-bill-wave text-green-600"></i> Tunai</span>
+                    <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full"><i class="fas fa-mobile-alt text-blue-600"></i> E-Wallet</span>
+                    <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full"><i class="fas fa-credit-card text-indigo-600"></i> QRIS</span>
+                    <span class="inline-flex items-center gap-1 text-xs bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full"><i class="fas fa-university text-purple-600"></i> Transfer Bank</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FITUR ===== -->
+        <section class="scroll-animate" aria-label="Fitur">
+            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 flex-shrink-0">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Fitur Layanan</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Kenali layanan yang tersedia</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-red-50/50 dark:bg-red-900/20">
+                        <div class="flex items-center gap-3 mb-2 text-red-700 dark:text-red-400">
+                            <i class="fas fa-calendar-check text-xl"></i>
+                            <h3 class="font-bold">Reservasi Meja</h3>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Pesan tempat lebih awal dengan menghubungi kami lewat telepon atau WhatsApp. Tersedia untuk grup kecil hingga besar.</p>
+                    </div>
+                    <div class="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-red-50/50 dark:bg-red-900/20">
+                        <div class="flex items-center gap-3 mb-2 text-red-700 dark:text-red-400">
+                            <i class="fas fa-bolt text-xl"></i>
+                            <h3 class="font-bold">Akses Instan</h3>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Tombol rute langsung membuka Google Maps, dan kontak bisa diakses dengan sekali klik.</p>
+                    </div>
+                    <div class="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-red-50/50 dark:bg-red-900/20">
+                        <div class="flex items-center gap-3 mb-2 text-red-700 dark:text-red-400">
+                            <i class="fas fa-camera-retro text-xl"></i>
+                            <h3 class="font-bold">Galeri Foto</h3>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Lihat suasana restoran, menu andalan, dan tempat duduk yang nyaman sebelum berkunjung.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== MENU ===== -->
+        <section id="menu" class="scroll-animate" aria-label="Menu">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                        <i class="fas fa-utensils text-red-600"></i> Menu &amp; Harga
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Klik item untuk detail &amp; pesan via WhatsApp</p>
+                </div>
+                <span id="menuCount" class="text-xs bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-full flex-shrink-0"></span>
+            </div>
+
+            <!-- Filter tabs -->
+            <div class="flex flex-wrap gap-2 mb-5 no-print" id="filterContainer" role="tablist" aria-label="Filter kategori menu">
+                <button class="filter-btn active px-4 py-1.5 text-xs font-semibold rounded-full bg-red-600 text-white" data-filter="all" role="tab" aria-selected="true">Semua</button>
+                <button class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600" data-filter="ramen" role="tab" aria-selected="false">Ramen</button>
+                <button class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600" data-filter="dry" role="tab" aria-selected="false">Dry Ramen</button>
+                <button class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600" data-filter="katsu" role="tab" aria-selected="false">Katsu</button>
+                <button class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600" data-filter="minuman" role="tab" aria-selected="false">Minuman</button>
+                <button class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600" data-filter="topping" role="tab" aria-selected="false">Topping</button>
+            </div>
+
+            <!-- Menu grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="menuGrid" role="tabpanel">
+                <!-- Items rendered by JS -->
+            </div>
+        </section>
+
+        <!-- ===== GALERI ===== -->
+        <section id="galeri" class="scroll-animate" aria-label="Galeri foto">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                        <i class="fas fa-images text-red-600"></i> Galeri Foto
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Klik foto untuk memperbesar</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="galleryGrid">
+                <!-- Images rendered by JS -->
+            </div>
+        </section>
+
+        <!-- ===== TESTIMONI ===== -->
+        <section id="testimoni" class="scroll-animate" aria-label="Testimoni pelanggan">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                        <i class="fas fa-comments text-red-600"></i> Testimoni Pelanggan
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Apa kata pengunjung tentang Hyaku Ramen</p>
+                </div>
+                <div class="flex gap-2 no-print">
+                    <button id="testiPrev" class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition shadow-sm" aria-label="Sebelumnya">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button id="testiNext" class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition shadow-sm" aria-label="Selanjutnya">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="relative overflow-hidden" id="testimonialContainer">
+                <div class="testimonial-slide" id="testimonialContent">
+                    <!-- Rendered by JS -->
+                </div>
+                <!-- Dots -->
+                <div class="flex justify-center gap-2 mt-4 no-print" id="testimonialDots"></div>
+            </div>
+        </section>
+
+        <!-- ===== ORANG LAIN JELAJAHI ===== -->
+        <section class="scroll-animate" aria-label="Restoran lain">
+            <h3 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Orang lain juga menelusuri</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center text-sm shadow-sm">
+                    <div>
+                        <p class="font-bold text-gray-800 dark:text-gray-200">CHO RAMEN</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Jepang &bull; <i class="fas fa-star text-yellow-400"></i> 4.9 (222)</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600"></i>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center text-sm shadow-sm">
+                    <div>
+                        <p class="font-bold text-gray-800 dark:text-gray-200">Yora Yokina Ramen</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Ramen &bull; <i class="fas fa-star text-yellow-400"></i> 4.3 (535)</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== RESERVASI ===== -->
+        <section id="reservasi" class="scroll-animate" aria-label="Reservasi">
+            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 flex-shrink-0">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Reservasi Meja</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Pesan tempat sebelum datang</p>
+                    </div>
+                </div>
+                <form id="reservationForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="resName" placeholder="Nama lengkap" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500" required>
+                    <input type="tel" id="resPhone" placeholder="Nomor telepon" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500" required>
+                    <input type="number" id="resGuests" placeholder="Jumlah tamu" min="1" max="50" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500" required>
+                    <input type="date" id="resDate" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500" required>
+                    <div class="sm:col-span-2 flex gap-4">
+                        <input type="time" id="resTime" value="12:00" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500" required>
+                        <textarea id="resNotes" rows="2" placeholder="Catatan tambahan (opsional)" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500"></textarea>
+                    </div>
+                    <button type="submit" class="sm:col-span-2 bg-red-600 hover:bg-red-700 text-white rounded-xl px-6 py-3 font-semibold transition flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fab fa-whatsapp"></i> Kirim Permintaan Reservasi
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ===== LOKASI ===== -->
+        <section id="lokasi" class="scroll-animate" aria-label="Lokasi">
+            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 flex-shrink-0">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Lokasi</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Temukan kami di Google Maps</p>
+                        </div>
+                    </div>
+                    <a href="https://www.google.com/maps/place/Hyaku+Ramen/@-6.359917,106.8170113,964m/data=!3m2!1e3!4b1!4m6!3m5!1s0x2e69ed967fc4b1db:0x23ce4811a5ed91f4!8m2!3d-6.3599223!4d106.8195862!16s%2Fg%2F11l1n29lrt?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center gap-1 flex-shrink-0">
+                        <i class="fas fa-external-link-alt"></i> Buka Maps
+                    </a>
+                </div>
+                <div class="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <iframe class="w-full h-64 md:h-72" loading="lazy" title="Google Maps lokasi Hyaku Ramen" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3965.086164!2d106.8195862!3d-6.3599223!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ed967fc4b1db%3A0x23ce4811a5ed91f4!2sHyaku+Ramen!5e0!3m2!1sid!2sid!4v1" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section id="faq" class="scroll-animate" aria-label="Pertanyaan umum">
+            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 flex-shrink-0">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">FAQ</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Pertanyaan yang sering diajukan</p>
+                    </div>
+                </div>
+                <div class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                    <details class="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-700/30 open:ring-2 open:ring-red-200 dark:open:ring-red-800 transition-all">
+                        <summary class="font-semibold cursor-pointer text-gray-800 dark:text-gray-200">Apakah tersedia menu halal?</summary>
+                        <p class="mt-3">Ya, semua menu kami disiapkan dengan bahan halal dan menjaga kebersihan dalam penyajian.</p>
+                    </details>
+                    <details class="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-700/30 open:ring-2 open:ring-red-200 dark:open:ring-red-800 transition-all">
+                        <summary class="font-semibold cursor-pointer text-gray-800 dark:text-gray-200">Apakah bisa reservasi untuk grup besar?</summary>
+                        <p class="mt-3">Bisa. Silakan hubungi kami lewat telepon atau isi form reservasi di website ini untuk grup lebih dari 6 orang.</p>
+                    </details>
+                    <details class="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-700/30 open:ring-2 open:ring-red-200 dark:open:ring-red-800 transition-all">
+                        <summary class="font-semibold cursor-pointer text-gray-800 dark:text-gray-200">Apa metode pembayaran yang diterima?</summary>
+                        <p class="mt-3">Kami menerima pembayaran tunai, e-wallet (GoPay, OVO, ShopeePay, DANA), QRIS, dan transfer bank.</p>
+                    </details>
+                    <details class="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-700/30 open:ring-2 open:ring-red-200 dark:open:ring-red-800 transition-all">
+                        <summary class="font-semibold cursor-pointer text-gray-800 dark:text-gray-200">Apakah ada menu untuk vegetarian?</summary>
+                        <p class="mt-3">Kami menyediakan beberapa opsi menu yang bisa disesuaikan. Silakan hubungi kami untuk informasi lebih lanjut.</p>
+                    </details>
+                    <details class="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-700/30 open:ring-2 open:ring-red-200 dark:open:ring-red-800 transition-all">
+                        <summary class="font-semibold cursor-pointer text-gray-800 dark:text-gray-200">Berapa kisaran harga per orang?</summary>
+                        <p class="mt-3">Kisaran harga per orang sekitar Rp 25.000 &mdash; Rp 50.000, tergantung pesanan.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== NEWSLETTER ===== -->
+        <section id="newsletter" class="scroll-animate no-print" aria-label="Newsletter">
+            <div class="bg-gradient-to-br from-red-600 to-red-800 dark:from-red-900 dark:to-red-950 p-6 md:p-8 rounded-2xl shadow-sm text-white text-center">
+                <div class="max-w-md mx-auto space-y-3">
+                    <i class="fas fa-envelope-open-text text-3xl text-yellow-300"></i>
+                    <h2 class="text-xl font-bold">Dapatkan Info Promo Terbaru</h2>
+                    <p class="text-sm text-red-100">Daftar newsletter untuk mendapatkan info menu baru dan promo spesial.</p>
+                    <form id="newsletterForm" class="flex flex-col sm:flex-row gap-3 mt-3">
+                        <input type="email" id="newsletterEmail" placeholder="Masukkan email Anda" class="flex-1 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
+                        <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-semibold px-5 py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane"></i> Daftar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== KONTAK & FORM ===== -->
+        <section id="kontak" class="scroll-animate" aria-label="Kontak">
+            <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 flex-shrink-0">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Hubungi Kami</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Isi form untuk menghubungi via WhatsApp</p>
+                    </div>
+                </div>
+                <form id="contactForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="formName" placeholder="Nama Anda" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500" required>
+                    <input type="email" id="formEmail" placeholder="Email Anda" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500">
+                    <input type="tel" id="formPhone" placeholder="Nomor telepon" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500">
+                    <select id="formSubject" class="w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500">
+                        <option value="">Pilih tujuan kontak</option>
+                        <option value="Reservasi">Reservasi</option>
+                        <option value="Informasi menu">Informasi menu</option>
+                        <option value="Promo & kerja sama">Promo &amp; kerja sama</option>
+                        <option value="Kritik & saran">Kritik &amp; saran</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                    <textarea id="formMessage" rows="4" placeholder="Pesan Anda" class="sm:col-span-2 w-full rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500" required></textarea>
+                    <button type="submit" class="sm:col-span-2 bg-green-500 hover:bg-green-600 text-white rounded-xl px-6 py-3 font-semibold transition flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fab fa-whatsapp"></i> Kirim via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== WHATSAPP FLOAT ===== -->
+    <a id="waButton" href="https://wa.me/6285174074352" target="_blank" rel="noopener" class="fixed bottom-6 left-6 z-30 bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg whatsapp-pulse transition-transform hover:scale-110 no-print" aria-label="Chat via WhatsApp">
+        <i class="fab fa-whatsapp text-2xl"></i>
+    </a>
+
+    <!-- ===== SCROLL TO TOP ===== -->
+    <button id="scrollTopBtn" class="fixed bottom-6 right-6 z-30 bg-red-600 hover:bg-red-700 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 invisible scale-75 cursor-pointer no-print" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ===== LIGHTBOX ===== -->
+    <div id="lightbox" class="lightbox fixed inset-0 z-50 bg-black/90 items-center justify-center p-4 cursor-pointer modal-backdrop" role="dialog" aria-label="Gambar diperbesar" aria-modal="true">
+        <button id="lbCloseBtn" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 transition cursor-pointer z-10 no-print" aria-label="Tutup">&times;</button>
+        <button id="lbPrevBtn" class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl hover:text-gray-300 transition cursor-pointer z-10 no-print hidden" aria-label="Sebelumnya"><i class="fas fa-chevron-left"></i></button>
+        <button id="lbNextBtn" class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl hover:text-gray-300 transition cursor-pointer z-10 no-print hidden" aria-label="Selanjutnya"><i class="fas fa-chevron-right"></i></button>
+        <img id="lbImage" class="max-w-full max-h-[85vh] rounded-lg object-contain animate-fade-in cursor-default" src="" alt="">
+        <p id="lbCaption" class="text-white/80 text-center mt-3 text-sm px-4"></p>
+    </div>
+
+    <!-- ===== MENU MODAL ===== -->
+    <div id="menuModal" class="menu-modal fixed inset-0 z-40 items-center justify-center p-4 bg-black/50 modal-backdrop" role="dialog" aria-label="Detail menu" aria-modal="true">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-xl animate-fade-in">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <span id="mmBadge" class="text-xs uppercase tracking-wider font-bold"></span>
+                    <h3 id="mmTitle" class="text-xl font-bold mt-1 text-gray-900 dark:text-gray-100"></h3>
+                </div>
+                <button id="mmCloseBtn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl cursor-pointer">&times;</button>
+            </div>
+            <p id="mmPrice" class="text-2xl font-bold text-red-600 dark:text-red-400"></p>
+            <p id="mmDesc" class="text-sm text-gray-600 dark:text-gray-400 mt-3"></p>
+            <button id="mmAddCartBtn" class="block w-full mt-6 bg-red-600 hover:bg-red-700 text-white rounded-xl py-3 font-semibold transition text-center cursor-pointer">
+                <i class="fas fa-plus mr-2"></i>Tambah ke Keranjang
+            </button>
+            <a id="mmWaLink" href="#" target="_blank" class="block w-full mt-3 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-semibold transition text-center">
+                <i class="fab fa-whatsapp mr-2"></i>Pesan via WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== CART MODAL ===== -->
+    <div id="cartModal" class="fixed inset-0 z-40 items-center justify-center p-4 bg-black/50 modal-backdrop" role="dialog" aria-label="Keranjang belanja" aria-modal="true">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full p-6 shadow-xl animate-fade-in max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <i class="fas fa-shopping-cart text-red-600"></i> Keranjang
+                </h3>
+                <button id="cartCloseBtn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl cursor-pointer">&times;</button>
+            </div>
+            <div id="cartItems" class="flex-1 overflow-y-auto space-y-3 min-h-0">
+                <!-- Cart items rendered by JS -->
+            </div>
+            <div id="cartEmpty" class="text-center py-10 text-gray-400 hidden">
+                <i class="fas fa-shopping-cart text-4xl mb-3"></i>
+                <p class="text-sm">Keranjang masih kosong</p>
+                <p class="text-xs text-gray-400 mt-1">Tambahkan menu dari daftar menu</p>
+            </div>
+            <div id="cartFooter" class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4 space-y-3 hidden">
+                <div class="flex justify-between items-center text-lg font-bold text-gray-900 dark:text-gray-100">
+                    <span>Total</span>
+                    <span id="cartTotal">Rp 0</span>
+                </div>
+                <button id="cartCheckoutBtn" class="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-semibold transition flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fab fa-whatsapp"></i> Pesan via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer" class="fixed bottom-24 right-6 z-50 flex flex-col gap-2 no-print" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-gray-400 pt-10 pb-6 mt-12 border-t border-gray-800" role="contentinfo">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 pb-8 border-b border-gray-800">
+                <div>
+                    <h3 class="font-bold text-white text-lg mb-3 flex items-center gap-2">
+                        <i class="fas fa-egg text-yellow-300"></i> Hyaku Ramen
+                    </h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Restoran ramen autentik di Kukusan, Depok. Menyajikan ramen dengan cita rasa Jepang asli sejak 2023.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-sm mb-3 uppercase tracking-wider">Jam Operasional</h3>
+                    <p class="text-sm text-gray-400">Setiap hari: 10.00 &ndash; 22.00</p>
+                    <p class="text-sm text-gray-500 mt-1">Makan di tempat &bull; Bawa pulang</p>
+                    <p id="statusTextFooter" class="text-xs mt-2 font-medium"></p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-sm mb-3 uppercase tracking-wider">Ikuti Kami</h3>
+                    <div class="flex gap-3">
+                        <a href="https://www.instagram.com/hyakuramen_/" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-red-700 text-gray-400 hover:text-white flex items-center justify-center transition" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/6285174074352" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-green-600 text-gray-400 hover:text-white flex items-center justify-center transition" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 pt-6 text-xs text-gray-500">
+                <p>&copy; 2026 Hyaku Ramen. Profile page based on Google Maps data.</p>
+                <div class="flex gap-4">
+                    <button id="printBtn" class="hover:text-gray-300 transition no-print"><i class="fas fa-print mr-1"></i>Cetak</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script src="images.js"></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
