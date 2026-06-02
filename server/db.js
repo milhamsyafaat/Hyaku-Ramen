@@ -4,14 +4,17 @@ var fs = require('fs');
 var bcrypt = require('bcryptjs');
 
 var DB_PATH = path.join(__dirname, '..', 'data', 'hyaku.db');
+var _db = null;
 
 function getDb() {
-    var dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    var db = new DatabaseSync(DB_PATH);
-    db.exec('PRAGMA journal_mode=WAL');
-    db.exec('PRAGMA foreign_keys=ON');
-    return db;
+    if (!_db) {
+        var dir = path.dirname(DB_PATH);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        _db = new DatabaseSync(DB_PATH);
+        _db.exec('PRAGMA journal_mode=WAL');
+        _db.exec('PRAGMA foreign_keys=ON');
+    }
+    return _db;
 }
 
 function initialize() {
@@ -24,17 +27,31 @@ function initialize() {
     db.exec('CREATE TABLE IF NOT EXISTS testimonials (id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT NOT NULL, initial TEXT DEFAULT "", avatarClass TEXT DEFAULT "", role TEXT DEFAULT "", date TEXT DEFAULT "", rating INTEGER DEFAULT 5, title TEXT DEFAULT "", text TEXT DEFAULT "", ownerReply TEXT DEFAULT "", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
     db.exec('CREATE TABLE IF NOT EXISTS gallery (id INTEGER PRIMARY KEY AUTOINCREMENT, src TEXT NOT NULL, alt TEXT DEFAULT "", sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
     db.exec('CREATE TABLE IF NOT EXISTS admin_users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+    db.exec('CREATE TABLE IF NOT EXISTS newsletter_subscribers (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+
+    db.exec('CREATE TABLE IF NOT EXISTS tables (id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT NOT NULL UNIQUE, capacity INTEGER NOT NULL, location TEXT DEFAULT "", status TEXT DEFAULT "available", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+    db.exec('CREATE TABLE IF NOT EXISTS payments (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, transaction_id TEXT DEFAULT "", gross_amount INTEGER NOT NULL, status TEXT DEFAULT "pending", payment_type TEXT DEFAULT "", transaction_time TEXT DEFAULT "", snap_token TEXT DEFAULT "", snap_redirect_url TEXT DEFAULT "", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+    db.exec('CREATE TABLE IF NOT EXISTS email_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, to_email TEXT NOT NULL, subject TEXT DEFAULT "", message TEXT DEFAULT "", status TEXT DEFAULT "sent", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+
+    try { db.exec('ALTER TABLE reservations ADD COLUMN table_id INTEGER DEFAULT NULL REFERENCES tables(id)'); } catch (e) {}
+    try { db.exec('ALTER TABLE orders ADD COLUMN email TEXT DEFAULT ""'); } catch (e) {}
+    try { db.exec('ALTER TABLE orders ADD COLUMN payment_id INTEGER DEFAULT NULL REFERENCES payments(id)'); } catch (e) {}
 
     var count = db.prepare('SELECT COUNT(*) as c FROM menu_items').get();
     if (count.c === 0) { seed(db); }
+
+    var tableCount = db.prepare('SELECT COUNT(*) as c FROM tables').get();
+    if (tableCount.c === 0) {
+        tableData.forEach(function (t) {
+            db.prepare('INSERT INTO tables (number, capacity, location) VALUES (?, ?, ?)').run(t.number, t.capacity, t.location);
+        });
+    }
 
     var adminCount = db.prepare('SELECT COUNT(*) as c FROM admin_users').get();
     if (adminCount.c === 0) {
         var hash = bcrypt.hashSync('HyakuAdmin123!', 10);
         db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run('admin', hash);
     }
-
-    db.close();
 }
 
 function seed(db) {
@@ -48,8 +65,24 @@ function seed(db) {
     testimonialData.forEach(function (t) {
         db.prepare('INSERT INTO testimonials (author, initial, avatarClass, role, date, rating, title, text, ownerReply) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').run(t.author, t.initial, t.avatarClass, t.role, t.date, t.rating, t.title, t.text, t.ownerReply);
     });
+    tableData.forEach(function (t) {
+        db.prepare('INSERT INTO tables (number, capacity, location) VALUES (?, ?, ?)').run(t.number, t.capacity, t.location);
+    });
     db.exec('COMMIT');
 }
+
+var tableData = [
+    { number: 'Meja 1', capacity: 2, location: 'Indoor' },
+    { number: 'Meja 2', capacity: 2, location: 'Indoor' },
+    { number: 'Meja 3', capacity: 4, location: 'Indoor' },
+    { number: 'Meja 4', capacity: 4, location: 'Indoor' },
+    { number: 'Meja 5', capacity: 6, location: 'Indoor' },
+    { number: 'Meja 6', capacity: 2, location: 'Outdoor' },
+    { number: 'Meja 7', capacity: 2, location: 'Outdoor' },
+    { number: 'Meja 8', capacity: 4, location: 'Outdoor' },
+    { number: 'Meja 9', capacity: 4, location: 'Outdoor' },
+    { number: 'Meja 10', capacity: 6, location: 'Outdoor' }
+];
 
 var IMG_LEGENDARY = 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=400&q=80';
 var IMG_TANTAN = 'https://images.unsplash.com/photo-1623341214825-9f4f963727da?auto=format&fit=crop&w=400&q=80';
@@ -104,4 +137,30 @@ var testimonialData = [
     { author: 'Alya Nurul Fadillah', initial: 'A', avatarClass: 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300', role: 'Local Guide \u2022 9 ulasan', date: '4 bulan lalu', rating: 5, title: 'BESSTTT. BESSTTTT. BESSTTT. GONG.', text: 'beneran GONG soalnya ramen disini GAK ADA LAWAN. harganya juga sangat amat SANGAAATT murah meriah dan porsinya lumayan banyak jujur KENYANG. ada banyak opsi minuman juga.', ownerReply: 'Terimakasih utk ulasannya kak...ditunggu kedatangannya kembali \u00f0\u009f\u0099\u008f' }
 ];
 
-module.exports = { getDb, initialize };
+function validate(schema, data) {
+    var errors = [];
+    Object.keys(schema).forEach(function (field) {
+        var rules = schema[field];
+        var value = data[field];
+        if (rules.required && (value === undefined || value === null || String(value).trim() === '')) {
+            errors.push(field + ' is required');
+            return;
+        }
+        if (value === undefined || value === null || value === '') return;
+        var strVal = String(value);
+        if (rules.maxLength && strVal.length > rules.maxLength) { errors.push(field + ' max ' + rules.maxLength + ' characters'); }
+        if (rules.type === 'number' && isNaN(Number(value))) { errors.push(field + ' must be a number'); }
+        if (rules.type === 'integer' && (!Number.isInteger(Number(value)) || isNaN(Number(value)))) { errors.push(field + ' must be an integer'); }
+        if (rules.min !== undefined && Number(value) < rules.min) { errors.push(field + ' min ' + rules.min); }
+        if (rules.max !== undefined && Number(value) > rules.max) { errors.push(field + ' max ' + rules.max); }
+        if (rules.pattern && !rules.pattern.test(strVal)) { errors.push(field + ' format invalid'); }
+    });
+    return errors.length ? errors : null;
+}
+
+function sanitize(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+}
+
+module.exports = { getDb, initialize, validate, sanitize };

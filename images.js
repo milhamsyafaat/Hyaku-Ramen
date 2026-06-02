@@ -1,4 +1,5 @@
 /* ===== GAMBAR — Ganti URL di sini ===== */
+var WA_NUMBER = '6285174074352';
 var IMG_LEGENDARY  = 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=400&q=80';
 var IMG_TANTAN     = 'https://images.unsplash.com/photo-1623341214825-9f4f963727da?auto=format&fit=crop&w=400&q=80';
 var IMG_TONKOTSU   = 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=400&q=80';

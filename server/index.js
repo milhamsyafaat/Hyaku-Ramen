@@ -1,12 +1,14 @@
 var express = require('express');
 var cors = require('cors');
 var path = require('path');
+var helmet = require('helmet');
 var rateLimit = require('express-rate-limit');
 var db = require('./db');
 
 var app = express();
 var PORT = process.env.PORT || 3001;
 
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
@@ -28,7 +30,10 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/tables', require('./routes/tables'));
+app.use('/api/payments', require('./routes/payments'));
 
 var rootDir = path.join(__dirname, '..');
 app.use(express.static(rootDir));
@@ -40,6 +45,12 @@ app.get('/admin/*', function (req, res) {
 });
 
 app.get('*', function (req, res) {
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'Not found' });
+    }
+    if (req.path.startsWith('/admin/')) {
+        return res.status(404).send('<h1>404 - Halaman tidak ditemukan</h1>');
+    }
     res.sendFile(path.join(rootDir, 'index.html'));
 });
 

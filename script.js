@@ -3,6 +3,12 @@ var $ = function (id) { return document.getElementById(id); };
 var qs = function (sel) { return document.querySelector(sel); };
 var qa = function (sel) { return document.querySelectorAll(sel); };
 
+/* ===== ESCAPE HTML (XSS prevention) ===== */
+function esc(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+}
+
 /* ===== TOAST SYSTEM ===== */
 var toastContainer = $('toastContainer');
 function showToast(message, type) {
@@ -238,14 +244,14 @@ __cartUpdateUI();
         }
         var html = '';
         items.forEach(function (m) {
-            var imgHtml = m.img ? '<div class="h-36 overflow-hidden"><img src="' + m.img + '" alt="' + m.name + '" class="w-full h-full object-cover" loading="lazy"></div>' : '<div class="h-36 bg-gray-100 dark:bg-gray-700 flex items-center justify-center"><i class="fas fa-utensils text-gray-400 text-2xl"></i></div>';
-            var badgeHtml = m.badge ? '<span class="text-xs uppercase tracking-wider font-bold ' + m.badgeClass + '">' + m.badge + '</span>' : '';
-            html += '<div class="menu-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden cursor-pointer hover:shadow-md" data-id="' + m.id + '">'
+            var imgHtml = m.img ? '<div class="h-36 overflow-hidden"><img src="' + m.img + '" alt="' + esc(m.name) + '" class="w-full h-full object-cover" loading="lazy"></div>' : '<div class="h-36 bg-gray-100 dark:bg-gray-700 flex items-center justify-center"><i class="fas fa-utensils text-gray-400 text-2xl"></i></div>';
+            var badgeHtml = m.badge ? '<span class="text-xs uppercase tracking-wider font-bold ' + esc(m.badgeClass) + '">' + esc(m.badge) + '</span>' : '';
+            html += '<div class="menu-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden cursor-pointer hover:shadow-md" data-id="' + esc(m.id) + '">'
                 + imgHtml
                 + '<div class="p-4">'
                 + badgeHtml
-                + '<h3 class="font-bold text-gray-800 dark:text-gray-200 mt-1 text-sm">' + m.name + '</h3>'
-                + '<p class="text-sm text-red-600 dark:text-red-400 font-semibold mt-1">' + m.price + '</p>'
+                + '<h3 class="font-bold text-gray-800 dark:text-gray-200 mt-1 text-sm">' + esc(m.name) + '</h3>'
+                + '<p class="text-sm text-red-600 dark:text-red-400 font-semibold mt-1">' + esc(m.price) + '</p>'
                 + '</div></div>';
         });
         grid.innerHTML = html;
@@ -265,7 +271,7 @@ __cartUpdateUI();
                 if (mmTitle) mmTitle.textContent = item.name;
                 if (mmPrice) mmPrice.textContent = item.price;
                 if (mmDesc) mmDesc.textContent = item.desc;
-                if (mmWa) mmWa.href = 'https://wa.me/6285174074352?text=' + encodeURIComponent('Halo Hyaku Ramen, saya ingin pesan ' + item.name + ' (' + item.price + ').');
+                if (mmWa) mmWa.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Halo Hyaku Ramen, saya ingin pesan ' + item.name + ' (' + item.price + ').');
                 if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
                 var mmAddBtn = $('mmAddCartBtn');
                 if (mmAddBtn) {
@@ -276,8 +282,8 @@ __cartUpdateUI();
     }
 
     function loadMenu() {
-        fetch('/api/menu').then(function (r) { return r.json(); }).then(function (data) {
-            menuData = data;
+        fetch('/api/menu').then(function (r) { return r.json(); }).then(function (res) {
+            menuData = res.data || res;
             render(currentFilter);
         }).catch(function () {
             menuData = MENU_DATA;
@@ -312,14 +318,14 @@ __cartUpdateUI();
         var html = '';
         data.forEach(function (img, i) {
             html += '<div class="gallery-item rounded-2xl overflow-hidden shadow-sm cursor-pointer" data-index="' + i + '">'
-                + '<img src="' + img.src + '" alt="' + img.alt + '" class="w-full h-48 sm:h-56 object-cover" loading="lazy">'
+                + '<img src="' + img.src + '" alt="' + esc(img.alt) + '" class="w-full h-48 sm:h-56 object-cover" loading="lazy">'
                 + '</div>';
         });
         grid.innerHTML = html;
     }
 
-    fetch('/api/gallery').then(function (r) { return r.json(); }).then(function (data) {
-        render(data);
+    fetch('/api/gallery').then(function (r) { return r.json(); }).then(function (res) {
+        render(res.data || res);
     }).catch(function () {
         render(GALLERY_DATA);
     });
@@ -421,19 +427,19 @@ __cartUpdateUI();
         var t = testimonialsData[index];
         var stars = '';
         for (var i = 0; i < 5; i++) { stars += i < t.rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'; }
-        var ownerHtml = t.ownerReply ? '<div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg text-xs text-gray-600 dark:text-gray-400 border-l-2 border-gray-300 dark:border-gray-600 mt-3"><p class="font-bold text-gray-700 dark:text-gray-300">Tanggapan Pemilik <span class="font-normal text-gray-400">&bull;</span></p><p class="mt-1">"' + t.ownerReply + '"</p></div>' : '';
-        var titleHtml = t.title ? '<p class="text-sm font-semibold text-gray-800 dark:text-gray-200">' + t.title + '</p>' : '';
+        var ownerHtml = t.ownerReply ? '<div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg text-xs text-gray-600 dark:text-gray-400 border-l-2 border-gray-300 dark:border-gray-600 mt-3"><p class="font-bold text-gray-700 dark:text-gray-300">Tanggapan Pemilik <span class="font-normal text-gray-400">&bull;</span></p><p class="mt-1">"' + esc(t.ownerReply) + '"</p></div>' : '';
+        var titleHtml = t.title ? '<p class="text-sm font-semibold text-gray-800 dark:text-gray-200">' + esc(t.title) + '</p>' : '';
         container.innerHTML = '<div class="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-3 animate-fade-in">'
             + '<div class="flex justify-between items-start">'
             + '<div class="flex items-center gap-3">'
-            + '<div class="w-10 h-10 rounded-full ' + t.avatarClass + ' flex items-center justify-center font-bold">' + t.initial + '</div>'
-            + '<div><h4 class="font-bold text-gray-800 dark:text-gray-200 text-sm">' + t.author + '</h4><p class="text-xs text-gray-400 dark:text-gray-500">' + t.role + '</p></div>'
+            + '<div class="w-10 h-10 rounded-full ' + t.avatarClass + ' flex items-center justify-center font-bold">' + esc(t.initial) + '</div>'
+            + '<div><h4 class="font-bold text-gray-800 dark:text-gray-200 text-sm">' + esc(t.author) + '</h4><p class="text-xs text-gray-400 dark:text-gray-500">' + esc(t.role) + '</p></div>'
             + '</div>'
-            + '<span class="text-xs text-gray-400 dark:text-gray-500">' + t.date + '</span>'
+            + '<span class="text-xs text-gray-400 dark:text-gray-500">' + esc(t.date) + '</span>'
             + '</div>'
             + '<div class="stars-display text-xs gap-0.5 flex">' + stars + '</div>'
             + titleHtml
-            + '<p class="text-sm text-gray-600 dark:text-gray-400">"' + t.text + '"</p>'
+            + '<p class="text-sm text-gray-600 dark:text-gray-400">"' + esc(t.text) + '"</p>'
             + ownerHtml
             + '</div>';
     }
@@ -474,8 +480,8 @@ __cartUpdateUI();
         }
     }
 
-    fetch('/api/testimonials').then(function (r) { return r.json(); }).then(function (data) {
-        init(data);
+    fetch('/api/testimonials').then(function (r) { return r.json(); }).then(function (res) {
+        init(res.data || res);
     }).catch(function () {
         init(TESTIMONIALS);
     });
@@ -554,7 +560,7 @@ __cartUpdateUI();
             + 'Tanggal: ' + date + '%0A'
             + 'Waktu: ' + time;
         if (notes) text += '%0A Catatan: ' + notes;
-        window.open('https://wa.me/6285174074352?text=' + text, '_blank');
+        window.open('https://wa.me/' + WA_NUMBER + '?text=' + text, '_blank');
         showToast('Permintaan reservasi dikirim!', 'success');
         if (resBtn) { resBtn.disabled = false; resBtn.innerHTML = 'Kirim Permintaan Reservasi'; }
     });
@@ -581,7 +587,7 @@ __cartUpdateUI();
         if (phone) text += ' No. Telepon: ' + phone + '.';
         if (subject) text += ' (' + subject + ')';
         text += ' ' + message;
-        window.open('https://wa.me/6285174074352?text=' + encodeURIComponent(text), '_blank');
+        window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text), '_blank');
         showToast('Pesan terkirim!', 'success');
         if (contactBtn) { contactBtn.disabled = false; contactBtn.innerHTML = 'Kirim Pesan'; }
     });
@@ -602,6 +608,7 @@ __cartUpdateUI();
         var email = input.value.trim();
         if (!email) return;
         try { localStorage.setItem('newsletter_email', email); } catch (e) {}
+        fetch('/api/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).catch(function () {});
         showToast('Terima kasih! ' + email + ' telah terdaftar.', 'success');
         form.reset();
     });
@@ -635,7 +642,7 @@ __cartUpdateUI();
             var item = __cart[i];
             total += item.priceNum * item.qty;
             html += '<div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">'
-                + '<div class="flex-1 min-w-0"><p class="font-semibold text-gray-800 dark:text-gray-200 text-sm truncate">' + item.name + '</p><p class="text-xs text-gray-500">' + item.price + '</p></div>'
+                + '<div class="flex-1 min-w-0"><p class="font-semibold text-gray-800 dark:text-gray-200 text-sm truncate">' + esc(item.name) + '</p><p class="text-xs text-gray-500">' + esc(item.price) + '</p></div>'
                 + '<div class="flex items-center gap-2 ml-3">'
                 + '<button class="cart-qty w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 flex items-center justify-center text-xs font-bold hover:bg-gray-300 dark:hover:bg-gray-500 transition cursor-pointer" data-i="' + i + '" data-d="minus">-</button>'
                 + '<span class="text-sm font-bold w-5 text-center">' + item.qty + '</span>'
@@ -680,6 +687,7 @@ __cartUpdateUI();
             if (__cart.length === 0) return;
             var name = ($('cartName') || {}).value || '';
             var phone = ($('cartPhone') || {}).value || '';
+            var email = ($('cartEmail') || {}).value || '';
             if (!name || !phone) {
                 showToast('Mohon isi nama dan nomor HP Anda.', 'warning');
                 return;
@@ -693,11 +701,17 @@ __cartUpdateUI();
                 items.push({ id: item.id, name: item.name, qty: item.qty, price: item.price, priceNum: item.priceNum });
                 total += item.priceNum * item.qty;
             }
-            fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, total: total, customer_name: name, customer_phone: phone }) }).then(function () {
+            fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, total: total, customer_name: name, customer_phone: phone, email: email }) }).then(function (r) { return r.json(); }).then(function (data) {
                 __cart = [];
                 __cartSave();
                 __cartUpdateUI();
                 render();
+                if (data.snap_redirect_url) {
+                    var payConfirm = confirm('Pesanan berhasil! Klik OK untuk melanjutkan ke pembayaran, atau Batal untuk chat WhatsApp.');
+                    if (payConfirm) {
+                        window.open(data.snap_redirect_url, '_blank');
+                    }
+                }
                 var text = 'Halo Hyaku Ramen, saya ingin pesan:%0A';
                 for (var j = 0; j < items.length; j++) {
                     var ci = items[j];
@@ -706,7 +720,7 @@ __cartUpdateUI();
                 text += '%0ATotal: Rp ' + total.toLocaleString('id-ID');
                 if (name) text += '%0ANama: ' + name;
                 if (phone) text += '%0ANo. HP: ' + phone;
-                window.open('https://wa.me/6285174074352?text=' + text, '_blank');
+                window.open('https://wa.me/' + WA_NUMBER + '?text=' + text, '_blank');
                 showToast('Pesanan berhasil dikirim!', 'success');
             }).catch(function () {
                 showToast('Gagal memproses pesanan, coba lagi.', 'error');

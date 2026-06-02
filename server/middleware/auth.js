@@ -1,5 +1,13 @@
 var jwt = require('jsonwebtoken');
-var SECRET = process.env.JWT_SECRET || 'hyaku-ramen-secret-2024';
+var SECRET = process.env.JWT_SECRET;
+if (!SECRET) {
+    if (process.env.NODE_ENV === 'production') {
+        console.error('FATAL: JWT_SECRET environment variable is not set');
+        process.exit(1);
+    }
+    SECRET = 'hyaku-ramen-dev-secret';
+    console.warn('WARNING: Using default JWT_SECRET for development. Set JWT_SECRET env var for production.');
+}
 
 function authMiddleware(req, res, next) {
     var header = req.headers.authorization;
