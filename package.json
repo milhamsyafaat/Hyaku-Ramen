@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Hyaku Ramen — full stack landing page with admin dashboard",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "node server/index.js",
     "dev": "node server/index.js"
