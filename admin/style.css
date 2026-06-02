@@ -1,0 +1,17 @@
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+.view.hidden { display: none; }
+#sidebarNav.hidden { display: none; }
+main { transition: margin-left 0.3s; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fade-in 0.25s ease-out; }
+
+@media (max-width: 1023px) {
+    #sidebarNav:not(.hidden) { position: fixed; z-index: 40; }
+    #sidebarNav:not(.hidden) + div + main { margin-left: 0; }
+}
+
+table th { font-size: 0.7rem; letter-spacing: 0.05em; }
+table td { vertical-align: middle; }
+
+input:focus, select:focus, textarea:focus { outline: none; }
+input, select, textarea { transition: border-color 0.2s; }

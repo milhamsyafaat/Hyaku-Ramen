@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Hyaku Ramen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+    <!-- LOGIN -->
+    <div id="viewLogin" class="view flex items-center justify-center min-h-screen px-4">
+        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm border border-gray-700">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-red-500">Hyaku Ramen</h1>
+                <p class="text-gray-400 text-sm mt-1">Admin Panel</p>
+            </div>
+            <form id="loginForm">
+                <div id="loginError" class="hidden bg-red-600/20 border border-red-600 text-red-400 text-sm p-3 rounded-xl mb-4 text-center">Username atau password salah</div>
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-400 mb-1">Username</label>
+                    <input id="loginUser" type="text" required class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm text-gray-400 mb-1">Password</label>
+                    <input id="loginPass" type="password" required class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500">
+                </div>
+                <button id="loginBtn" type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl transition">Masuk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebarNav" class="hidden">
+        <nav class="fixed top-0 left-0 h-full w-56 bg-gray-950 border-r border-gray-800 z-30 overflow-y-auto">
+            <div class="p-4 border-b border-gray-800">
+                <h2 class="font-bold text-red-500">Hyaku Ramen</h2>
+                <p class="text-xs text-gray-500 mt-1">Panel Admin</p>
+            </div>
+            <div class="p-2">
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewDashboard"><i class="fas fa-tachometer-alt w-5"></i>Dashboard</button>
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewMenu"><i class="fas fa-utensils w-5"></i>Menu</button>
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewOrders"><i class="fas fa-shopping-cart w-5"></i>Pesanan</button>
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewReservations"><i class="fas fa-calendar-alt w-5"></i>Reservasi</button>
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewMessages"><i class="fas fa-envelope w-5"></i>Pesan</button>
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewTestimonials"><i class="fas fa-star w-5"></i>Testimoni</button>
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewGallery"><i class="fas fa-images w-5"></i>Galeri</button>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800 bg-gray-950">
+                <div class="text-xs text-gray-500 mb-2 truncate"><i class="fas fa-user mr-1"></i><span id="adminUser"></span></div>
+                <button id="logoutBtn" class="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-gray-800 rounded-xl transition"><i class="fas fa-sign-out-alt mr-2"></i>Keluar</button>
+            </div>
+        </nav>
+
+        <!-- Mobile header -->
+        <div class="ml-56 p-4 bg-gray-900 border-b border-gray-800 flex items-center gap-3 lg:hidden">
+            <button id="hamburgerAdmin"><i class="fas fa-bars text-xl"></i></button>
+            <span class="font-bold text-red-500">Hyaku Ramen Admin</span>
+        </div>
+
+        <!-- Main content -->
+        <main class="ml-56 p-4 md:p-6 min-h-screen">
+
+            <!-- DASHBOARD -->
+            <div id="viewDashboard" class="view hidden">
+                <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-red-500" id="statMenu">0</div><div class="text-xs text-gray-400 mt-1">Menu Items</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-blue-500" id="statOrders">0</div><div class="text-xs text-gray-400 mt-1">Total Pesanan</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-yellow-500" id="statPendingOrders">0</div><div class="text-xs text-gray-400 mt-1">Pending Orders</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-green-500" id="statReservations">0</div><div class="text-xs text-gray-400 mt-1">Total Reservasi</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-cyan-500" id="statTodayRes">0</div><div class="text-xs text-gray-400 mt-1">Reservasi Hari Ini</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-orange-500" id="statMessages">0</div><div class="text-xs text-gray-400 mt-1">Pesan Belum Dibaca</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-purple-500" id="statTestimonials">0</div><div class="text-xs text-gray-400 mt-1">Testimoni</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-pink-500" id="statGallery">0</div><div class="text-xs text-gray-400 mt-1">Galeri</div></div>
+                </div>
+            </div>
+
+            <!-- MENU -->
+            <div id="viewMenu" class="view hidden">
+                <div class="flex justify-between items-center mb-4"><h1 class="text-2xl font-bold">Menu</h1><button id="addMenuBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition"><i class="fas fa-plus mr-1"></i>Tambah</button></div>
+                <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="menuTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">ID</th><th class="py-3 px-3 text-left">Nama</th><th class="py-3 px-3 text-left">Kategori</th><th class="py-3 px-3 text-left">Harga</th><th class="py-3 px-3 text-left">Badge</th><th class="py-3 px-3 text-right">Aksi</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <!-- ORDERS -->
+            <div id="viewOrders" class="view hidden">
+                <h1 class="text-2xl font-bold mb-4">Pesanan</h1>
+                <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="ordersTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">ID</th><th class="py-3 px-3 text-left">Items</th><th class="py-3 px-3 text-left">Total</th><th class="py-3 px-3 text-left">Pelanggan</th><th class="py-3 px-3 text-left">Status</th><th class="py-3 px-3 text-left">Tgl</th><th class="py-3 px-3 text-right">Ubah Status</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <!-- RESERVATIONS -->
+            <div id="viewReservations" class="view hidden">
+                <h1 class="text-2xl font-bold mb-4">Reservasi</h1>
+                <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="reservationsTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">ID</th><th class="py-3 px-3 text-left">Nama</th><th class="py-3 px-3 text-left">Telepon</th><th class="py-3 px-3 text-left">Tamu</th><th class="py-3 px-3 text-left">Tanggal</th><th class="py-3 px-3 text-left">Status</th><th class="py-3 px-3 text-left">Dibuat</th><th class="py-3 px-3 text-right">Ubah Status</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <!-- MESSAGES -->
+            <div id="viewMessages" class="view hidden">
+                <h1 class="text-2xl font-bold mb-4">Pesan Masuk</h1>
+                <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="messagesTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">ID</th><th class="py-3 px-3 text-left">Nama</th><th class="py-3 px-3 text-left">Telepon</th><th class="py-3 px-3 text-left">Pesan</th><th class="py-3 px-3 text-left">Status</th><th class="py-3 px-3 text-left">Tgl</th><th class="py-3 px-3 text-right">Aksi</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <!-- TESTIMONIALS -->
+            <div id="viewTestimonials" class="view hidden">
+                <div class="flex justify-between items-center mb-4"><h1 class="text-2xl font-bold">Testimoni</h1><button id="addTestiBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition"><i class="fas fa-plus mr-1"></i>Tambah</button></div>
+                <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="testimonialsTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">ID</th><th class="py-3 px-3 text-left">Author</th><th class="py-3 px-3 text-left">Role</th><th class="py-3 px-3 text-left">Rating</th><th class="py-3 px-3 text-left">Text</th><th class="py-3 px-3 text-right">Aksi</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <!-- GALLERY -->
+            <div id="viewGallery" class="view hidden">
+                <div class="flex justify-between items-center mb-4"><h1 class="text-2xl font-bold">Galeri</h1><button id="addGalleryBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition"><i class="fas fa-plus mr-1"></i>Tambah</button></div>
+                <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="galleryTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">ID</th><th class="py-3 px-3 text-left">Gambar</th><th class="py-3 px-3 text-left">Alt</th><th class="py-3 px-3 text-left">Urutan</th><th class="py-3 px-3 text-right">Aksi</th></tr></thead><tbody></tbody></table></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MENU FORM MODAL -->
+    <div id="menuFormModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-lg border border-gray-700 p-6">
+            <h2 id="menuModalTitle" class="text-lg font-bold mb-4">Tambah Menu</h2>
+            <form id="menuForm">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3 col-span-2"><label class="block text-xs text-gray-400 mb-1">ID</label><input id="mmId" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Kategori</label><select id="mmCat" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"><option value="ramen">Ramen</option><option value="dry">Dry Ramen</option><option value="katsu">Katsu</option><option value="minuman">Minuman</option><option value="topping">Topping</option></select></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Nama</label><input id="mmName" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Harga (display)</label><input id="mmPrice" required placeholder="Rp 25.000" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Harga (numeric)</label><input id="mmPriceNum" type="number" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Badge</label><input id="mmBadge" placeholder="Best Seller" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Badge Class</label><input id="mmBadgeClass" placeholder="text-red-500" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3 col-span-2"><label class="block text-xs text-gray-400 mb-1">Deskripsi</label><textarea id="mmDesc" rows="2" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></textarea></div>
+                    <div class="mb-3 col-span-2"><label class="block text-xs text-gray-400 mb-1">Image URL</label><input id="mmImg" placeholder="https://images.unsplash.com/..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition flex-1">Simpan</button>
+                    <button type="button" id="menuFormCancel" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-xl text-sm transition">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TESTIMONIAL FORM MODAL -->
+    <div id="testiFormModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-lg border border-gray-700 p-6">
+            <h2 id="testiModalTitle" class="text-lg font-bold mb-4">Tambah Testimoni</h2>
+            <form id="testiForm">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="mb-3 col-span-2"><label class="block text-xs text-gray-400 mb-1">Author</label><input id="tmAuthor" required class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Role</label><input id="tmRole" placeholder="Local Guide • 81 ulasan" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Date</label><input id="tmDate" placeholder="6 bulan lalu" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Rating</label><select id="tmRating" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm"><option value="5">5★</option><option value="4">4★</option><option value="3">3★</option><option value="2">2★</option><option value="1">1★</option></select></div>
+                    <div class="mb-3 col-span-2"><label class="block text-xs text-gray-400 mb-1">Judul</label><input id="tmTitle" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                    <div class="mb-3 col-span-2"><label class="block text-xs text-gray-400 mb-1">Text</label><textarea id="tmText" rows="2" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></textarea></div>
+                    <div class="mb-3 col-span-2"><label class="block text-xs text-gray-400 mb-1">Balasan Pemilik</label><textarea id="tmReply" rows="2" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></textarea></div>
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition flex-1">Simpan</button>
+                    <button type="button" id="testiFormCancel" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-xl text-sm transition">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- GALLERY FORM MODAL -->
+    <div id="galleryFormModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-lg border border-gray-700 p-6">
+            <h2 id="galleryModalTitle" class="text-lg font-bold mb-4">Tambah Galeri</h2>
+            <form id="galleryForm">
+                <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Image URL</label><input id="glSrc" required placeholder="https://images.unsplash.com/..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Alt Text</label><input id="glAlt" placeholder="Deskripsi gambar" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                <div class="mb-3"><label class="block text-xs text-gray-400 mb-1">Urutan</label><input id="glOrder" type="number" value="0" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500"></div>
+                <div class="flex gap-2 mt-4">
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition flex-1">Simpan</button>
+                    <button type="button" id="galleryFormCancel" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-xl text-sm transition">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRM MODAL -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-sm border border-gray-700 p-6 text-center">
+            <div class="text-red-500 text-4xl mb-3"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 class="text-lg font-bold mb-2">Konfirmasi Hapus</h3>
+            <p class="text-sm text-gray-400 mb-6" id="deleteModalMessage">Yakin ingin menghapus data ini?</p>
+            <div class="flex gap-2">
+                <button id="deleteConfirmBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition flex-1">Hapus</button>
+                <button id="deleteCancelBtn" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-xl text-sm transition">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="adminToast" class="fixed top-4 right-4 z-50 hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
