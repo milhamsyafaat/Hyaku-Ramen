@@ -54,7 +54,7 @@ npm run dev    # identical to start
 
 **Rate limiting** (all 15-min windows): `/api/*` 100 req, `/api/auth/login` 5 req, form endpoints (`/api/contact`, `/api/reservations`, `/api/orders`) 10 req each.
 
-**Unused dep**: `pg` in `backend/package.json` is listed but never imported — the app uses `node:sqlite` only.
+**Unused deps**: `pg` and `http-proxy-middleware` in `backend/package.json` are listed but never imported — the app uses `node:sqlite` only.
 
 ## API
 
@@ -64,7 +64,7 @@ Forms POST to `/api/*` (fire-and-forget, `.catch(function() {})`) **and** open W
 
 ## WhatsApp number
 
-`+6285174074352` is hardcoded in 7 hrefs across `frontend/index.html` + used via `WA_NUMBER` in 4 spots in `frontend/script.js` (lines 274, 563, 590, 723). `frontend/images.js` defines `WA_NUMBER` (digits only) used by `script.js` for WhatsApp links; `frontend/index.html` has its own raw `+6285174074352` hrefs. Always update **both** the `WA_NUMBER` var **and** all 7 raw `tel:`/`wa.me/` hrefs in `frontend/index.html`.
+`+6285174074352` is hardcoded in 6 hrefs across `frontend/index.html` (lines 147, 179, 222, 276, 566, 666) + used via `WA_NUMBER` in 4 spots in `frontend/script.js` (lines 274, 563, 590, 723). `frontend/images.js` defines `WA_NUMBER` (digits only) used by `script.js` for WhatsApp links; `frontend/index.html` has its own raw `+6285174074352` hrefs. Always update **both** the `WA_NUMBER` var **and** all 6 raw `tel:`/`wa.me/` hrefs in `frontend/index.html`.
 
 ## Local storage keys
 
@@ -77,6 +77,10 @@ Forms POST to `/api/*` (fire-and-forget, `.catch(function() {})`) **and** open W
 Seed data in `backend/db.js` (`menuData`, `galleryData`, `testimonialData`, `tableData`). After seeding, manage via admin panel.
 
 **Tables** (`tableData`): 10 tables, `number` (Meja 1-10), `capacity` (2/4/6), `location` (Indoor/Outdoor).
+
+## CI/CD
+
+`.github/workflows/deploy.yml` — on push to `main`, uploads `frontend/` to GitHub Pages. Only the frontend directory is deployed; backend and admin areas are not published via this workflow.
 
 ## Admin SPA
 
