@@ -2,13 +2,13 @@
   "name": "hyaku-ramen",
   "version": "1.0.0",
   "private": true,
-  "description": "Hyaku Ramen — full stack landing page with admin dashboard",
+  "description": "Hyaku Ramen — API server",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "node server/index.js"
+    "start": "node index.js",
+    "dev": "node index.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

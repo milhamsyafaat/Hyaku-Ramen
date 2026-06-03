@@ -3,7 +3,7 @@ var path = require('path');
 var fs = require('fs');
 var bcrypt = require('bcryptjs');
 
-var DB_PATH = path.join(__dirname, '..', 'data', 'hyaku.db');
+var DB_PATH = path.join(__dirname, 'data', 'hyaku.db');
 var _db = null;
 
 function getDb() {

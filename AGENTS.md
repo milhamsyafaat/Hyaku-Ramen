@@ -1,59 +1,70 @@
-# Hyaku Ramen
+# Hyaku Ramen — Monorepo
 
-Vanilla `index.html` + Tailwind v3 CDN + FontAwesome 6.4 CDN + Inter (Google Fonts) + ES5 JS. Backend: **Node.js >=22 + Express + built-in `node:sqlite`** (`server/`). Admin SPA at `/admin/`.
+3 bagian terpisah dalam 1 repo:
+
+| Folder | Hosting |
+|--------|---------|
+| `frontend/` | GitHub Pages |
+| `backend/` | VPS (API server) |
+| `admin/` | GitHub Pages (subdomain) |
+
+**Frontend**: Vanilla HTML + Tailwind v3 CDN + FontAwesome 6.4 CDN + Inter (GFonts) + ES5 JS.  
+**Backend**: Node.js >=22 + Express + built-in `node:sqlite`.  
+**Admin SPA**: ES5 JS, calls API via Cloudflare proxy.
 
 ```bash
+cd backend
 npm install
-npm start      # node server/index.js → http://localhost:3001
-npm run dev    # same as start
+npm start      # node index.js → http://localhost:3001
+npm run dev    # identical to start
 ```
-
-Admin: `http://localhost:3001/admin/` — login `admin` / `HyakuAdmin123!`.
 
 ## ES5 frontend, no build step
 
 - `var`, function expressions, no arrow functions, no modules, no imports.
-- Every feature is a standalone IIFE in `script.js`.
-- DOM helpers (`script.js:2-4`): `$('#id')` = `getElementById`, `qs()`/`qa()` = querySelector/All.
-- `esc()` (`script.js:7-10`) for XSS-safe HTML — use it for all user-generated content.
+- Every feature is a standalone IIFE in `frontend/script.js`.
+- DOM helpers (`frontend/script.js:2-4`): `$('#id')` = `getElementById`, `qs()`/`qa()` = querySelector/All.
+- `esc()` (`frontend/script.js:7-10`) for XSS-safe HTML — use it for all user-generated content.
 
-## JS load order (index.html:682-684)
+## JS load order (frontend/index.html)
 
 1. `images.js` — image URL variables (`IMG_*`, `GAL_*`, `WA_NUMBER`)
 2. `data.js` — static data arrays (`MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS`) — API fallback
 3. `script.js` — all logic
 
-Root-level `.js`/`.css` files are canonical. `js/` and `css/` subdirs are stale copies — edit only root files.
-
 ## Backend
 
-`server/index.js` — Express app, static root (`/`), admin (`/admin`), API (`/api/*`). All routes in `server/routes/`.
+`backend/index.js` — pure API server. In dev (`NODE_ENV !== 'production'`) it also serves static frontend/admin files. In production, only API routes respond; everything else returns 404.
 
-**DB**: built-in `node:sqlite` (`DatabaseSync` — Node 22+). Sync API (`db.prepare().get()`, `db.prepare().run()`). DB at `data/hyaku.db`, auto-created + seeded on first start. `data/*.db*` gitignored. `server/db.js` exports `validate(schema, data)` and `sanitize(str)`, plus `tableData` (10 tables Meja 1-10).
+**DB**: built-in `node:sqlite` (`DatabaseSync` — Node 22+). Sync API (`db.prepare().get()`, `db.prepare().run()`). DB at `backend/data/hyaku.db`, auto-created + seeded on first start. `backend/data/*.db*` gitignored. `backend/db.js` exports `getDb()`, `initialize()`, `validate(schema, data)`, and `sanitize(str)`. Seed data (`menuData`, `galleryData`, `testimonialData`, `tableData`) is module-scoped inside `backend/db.js`.
 
-**`server/db.js` has its own copies of image URL variables** (`IMG_*`, `GAL_*`). If you update `images.js`, update `server/db.js` too.
+**`backend/db.js` has its own copies of image URL variables** (`IMG_*`, `GAL_*`). If you update `frontend/images.js`, update `backend/db.js` too.
 
-**JWT auth** (`server/middleware/auth.js`): `JWT_SECRET` env var required in production; dev falls back to `'hyaku-ramen-dev-secret'`. Tokens expire in 24h.
+**Default admin credentials**: `admin` / `HyakuAdmin123!` (created on first start, printed in dev console).
 
-**`.env` is a template** (gitignored) — no `dotenv` package, set env vars manually. Needed: `JWT_SECRET`, `MIDTRANS_*` (optional), `SMTP_*` (optional).
+**JWT auth** (`backend/middleware/auth.js`): `JWT_SECRET` env var required in production; dev falls back to `'hyaku-ramen-dev-secret'`. Tokens expire in 24h.
 
-**Helmet**: disabled CSP + crossOriginEmbedderPolicy (`server/index.js:11`).
+**`.env` is a template** (gitignored, in `backend/`) — no `dotenv` package, set env vars manually. Keys: `JWT_SECRET`, `MIDTRANS_*` (optional), `SMTP_*` (optional), `ADMIN_EMAIL`.
 
-**Midtrans payments** (`server/services/midtrans.js`): optional, requires `MIDTRANS_SERVER_KEY`/`MIDTRANS_CLIENT_KEY` env vars. Payment notifications at `POST /api/payments/notification`.
+**Helmet**: disabled CSP + crossOriginEmbedderPolicy (`backend/index.js:11`).
 
-**Email** (`server/services/email.js`): optional via nodemailer. Requires `SMTP_*` env vars.
+**Midtrans payments** (`backend/services/midtrans.js`): optional, requires `MIDTRANS_SERVER_KEY`/`MIDTRANS_CLIENT_KEY` env vars. Payment notifications at `POST /api/payments/notification`.
+
+**Email** (`backend/services/email.js`): optional via nodemailer. Requires `SMTP_*` env vars.
 
 **Rate limiting** (all 15-min windows): `/api/*` 100 req, `/api/auth/login` 5 req, form endpoints (`/api/contact`, `/api/reservations`, `/api/orders`) 10 req each.
 
+**Unused dep**: `pg` in `backend/package.json` is listed but never imported — the app uses `node:sqlite` only.
+
 ## API
 
-Endpoints in `server/routes/*.js`. Render functions fetch from API, fall back to globals (`MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS`).
+Endpoints in `backend/routes/*.js`. Render functions fetch from API, fall back to globals (`MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS`).
 
-Forms POST to `/api/*` (fire-and-forget) **and** open WhatsApp in a new tab.
+Forms POST to `/api/*` (fire-and-forget, `.catch(function() {})`) **and** open WhatsApp in a new tab.
 
 ## WhatsApp number
 
-`+6285174074352` is hardcoded in ~10 places across `index.html` and `script.js` — search both files if changing. `images.js` defines `WA_NUMBER` (digits only) used by `script.js` for WhatsApp links; `index.html` has its own raw `+6285174074352` hrefs. Always update **both** the `WA_NUMBER` var **and** the raw `tel:`/`wa.me/` hrefs in `index.html`.
+`+6285174074352` is hardcoded in 7 hrefs across `frontend/index.html` + used via `WA_NUMBER` in 4 spots in `frontend/script.js` (lines 274, 563, 590, 723). `frontend/images.js` defines `WA_NUMBER` (digits only) used by `script.js` for WhatsApp links; `frontend/index.html` has its own raw `+6285174074352` hrefs. Always update **both** the `WA_NUMBER` var **and** all 7 raw `tel:`/`wa.me/` hrefs in `frontend/index.html`.
 
 ## Local storage keys
 
@@ -63,7 +74,7 @@ Forms POST to `/api/*` (fire-and-forget) **and** open WhatsApp in a new tab.
 
 **Menu** categories: `ramen`/`dry`/`katsu`/`minuman`/`topping`. Fields: `id`, `cat`, `name`, `price` (display string), `priceNum` (numeric for cart), `badge`, `badgeClass`, `desc`, `img` (empty = icon placeholder).
 
-Seed data in `server/db.js` (`menuData`, `galleryData`, `testimonialData`, `tableData`). After seeding, manage via admin panel.
+Seed data in `backend/db.js` (`menuData`, `galleryData`, `testimonialData`, `tableData`). After seeding, manage via admin panel.
 
 **Tables** (`tableData`): 10 tables, `number` (Meja 1-10), `capacity` (2/4/6), `location` (Indoor/Outdoor).
 
@@ -77,4 +88,4 @@ Images from `images.unsplash.com` (one DuckDuckGo image for Katsu Curry). Fonts 
 
 ## No test/lint/typecheck suite
 
-`package.json` only has `start` and `dev` (both: `node server/index.js`). No test framework, no linter, no type checker.
+`backend/package.json` only has `start` and `dev` (both: `node index.js`). No test framework, no linter, no type checker.
