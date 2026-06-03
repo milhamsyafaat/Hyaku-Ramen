@@ -1,10 +1,11 @@
 # Hyaku Ramen
 
-Vanilla `index.html` + Tailwind v3 CDN + FontAwesome 6 CDN + Inter (Google Fonts) + ES5 JS. Backend: **Node.js + Express + built-in `node:sqlite`** (`server/`). Admin dashboard at `/admin/`.
+Vanilla `index.html` + Tailwind v3 CDN + FontAwesome 6 CDN + Inter (Google Fonts) + ES5 JS. Backend: **Node.js >=22 + Express + built-in `node:sqlite`** (`server/`). Admin dashboard at `/admin/`.
 
 ```bash
 npm install
-npm start   # → http://localhost:3001
+npm start      # node server/index.js → http://localhost:3001
+npm run dev    # same as start
 ```
 
 Admin: `http://localhost:3001/admin/` — login `admin` / `HyakuAdmin123!`.
@@ -16,10 +17,10 @@ Admin: `http://localhost:3001/admin/` — login `admin` / `HyakuAdmin123!`.
 - DOM helpers (`script.js:2-4`): `$('#id')` = `getElementById`, `qs()`/`qa()` = querySelector/All.
 - `esc()` (`script.js:7-10`) for XSS-safe HTML — use it for all user-generated content.
 
-## JS load order (index.html:681-684)
+## JS load order (index.html:682-684)
 
-1. `images.js` — image URL variables
-2. `data.js` — static data arrays (API fallback)
+1. `images.js` — image URL variables (`IMG_*`, `GAL_*`, `WA_NUMBER`)
+2. `data.js` — static data arrays (`MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS`) — API fallback
 3. `script.js` — all logic
 
 Root-level `.js`/`.css` files are the source of truth. `js/` and `css/` subdirs are exact duplicates — edit only root files.
@@ -28,7 +29,7 @@ Root-level `.js`/`.css` files are the source of truth. `js/` and `css/` subdirs 
 
 `server/index.js` — Express app, static root (`/`), admin (`/admin`), API (`/api/*`). All routes in `server/routes/`.
 
-**DB**: built-in `node:sqlite` (`DatabaseSync` — Node 22+). Sync API (`db.prepare().get()`, `db.prepare().run()`). DB at `data/hyaku.db`, auto-created + seeded on first start. `server/db.js` exports `validate(schema, data)` and `sanitize(str)`.
+**DB**: built-in `node:sqlite` (`DatabaseSync` — Node 22+). Sync API (`db.prepare().get()`, `db.prepare().run()`). DB at `data/hyaku.db`, auto-created + seeded on first start. `data/*.db` files are gitignored. `server/db.js` exports `validate(schema, data)` and `sanitize(str)`.
 
 **`server/db.js` has its own copies of image URL variables** (`IMG_*`, `GAL_*`). If you update `images.js`, update `server/db.js` too.
 
@@ -36,9 +37,13 @@ Root-level `.js`/`.css` files are the source of truth. `js/` and `css/` subdirs 
 
 **JWT auth** (`server/middleware/auth.js`): `JWT_SECRET` env var required in production; dev falls back to `'hyaku-ramen-dev-secret'`. Tokens expire in 24h.
 
-**`.env` is a template** — no `dotenv` package. Set env vars manually in the shell. Env vars needed: `JWT_SECRET`, `MIDTRANS_*` (optional), `SMTP_*` (optional).
+**`.env` is a template** (gitignored) — no `dotenv` package, set env vars manually. Needed: `JWT_SECRET`, `MIDTRANS_*` (optional), `SMTP_*` (optional).
+
+**Helmet**: disabled CSP + cross-origin policy (`server/index.js:11`).
 
 **Midtrans payments** (`server/services/midtrans.js`): optional. Requires `MIDTRANS_SERVER_KEY` and `MIDTRANS_CLIENT_KEY` env vars. Payment notifications at `POST /api/payments/notification`.
+
+**Email** (`server/services/email.js`): optional via nodemailer. Requires `SMTP_*` env vars.
 
 ## API
 
