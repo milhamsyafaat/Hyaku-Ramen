@@ -90,7 +90,7 @@ var IMG_TONKOTSU = 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?au
 var IMG_DRY_HYAKU = 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=400&q=80';
 var IMG_DRY_KATSU = 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80';
 var IMG_KATSU = 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=400&q=80';
-var IMG_KATSU_CURRY = 'https://images.unsplash.com/photo-1631451095765-2c91616fc9e6?auto=format&fit=crop&w=400&q=80';
+var IMG_KATSU_CURRY = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.fPE00prlmdqo5npzpWJ_2QHaHa%3Fpid%3DApi&f=1&ipt=014e417f84e6118fefa537a46e020913bcb5e76b05d1120c1802c27be41291bd&ipo=images';
 var IMG_OCHA = 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80';
 var IMG_TEH_TARIK = 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=400&q=80';
 var IMG_LEMON_TEA = 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=400&q=80';
