@@ -49,6 +49,10 @@ if (isDev) {
         res.sendFile(path.join(rootDir, 'frontend', 'index.html'));
     });
 } else {
+    app.use('/admin', express.static(path.join(__dirname, '..', 'admin')));
+    app.get('/admin/*', function (req, res) {
+        res.sendFile(path.join(__dirname, '..', 'admin', 'index.html'));
+    });
     app.all('*', function (req, res) {
         res.status(404).json({ error: 'API endpoint not found' });
     });

@@ -1,4 +1,4 @@
-var API = '/api';
+var API = 'https://hyaku-ramen-production.up.railway.app/api';
 var TOKEN = localStorage.getItem('admin_token');
 
 /* ===== ESCAPE HTML (XSS prevention) ===== */
