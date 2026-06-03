@@ -1,3 +1,4 @@
+var crypto = require('crypto');
 var midtransClient = require('midtrans-client');
 
 var SERVER_KEY = process.env.MIDTRANS_SERVER_KEY || '';
@@ -33,15 +34,13 @@ function createTransaction(orderId, grossAmount, customerDetails) {
 }
 
 function verifyNotification(body) {
-    if (!snap) return null;
-    var statusResponse = {};
-    statusResponse.transaction_id = body.transaction_id;
-    statusResponse.order_id = body.order_id;
-    statusResponse.transaction_status = body.transaction_status;
-    statusResponse.payment_type = body.payment_type;
-    statusResponse.transaction_time = body.transaction_time;
-    statusResponse.gross_amount = body.gross_amount;
-    statusResponse.status_code = body.status_code;
+    if (!SERVER_KEY) return null;
+
+    var computed = crypto.createHash('sha512').update(body.order_id + body.status_code + body.gross_amount + SERVER_KEY).digest('hex');
+    if (body.signature_key !== computed) {
+        console.warn('Payment notification: invalid signature');
+        return null;
+    }
 
     var transactionStatus = body.transaction_status;
     var fraudStatus = body.fraud_status;

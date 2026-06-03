@@ -1,4 +1,4 @@
-var API = 'https://hyaku-ramen-production.up.railway.app/api';
+var API = '/api';
 var TOKEN = localStorage.getItem('admin_token');
 
 /* ===== ESCAPE HTML (XSS prevention) ===== */
@@ -95,6 +95,7 @@ function loadDashboard() {
         if (document.getElementById('statNewsletter')) document.getElementById('statNewsletter').textContent = d.newsletterCount || 0;
         if (document.getElementById('statTables')) document.getElementById('statTables').textContent = d.tableCount || 0;
         if (document.getElementById('statAvailableTables')) document.getElementById('statAvailableTables').textContent = d.availableTables || 0;
+        if (document.getElementById('statWaNumbers')) document.getElementById('statWaNumbers').textContent = d.waNumberCount || 0;
     }).catch(function () {});
 }
 
@@ -582,6 +583,93 @@ document.getElementById('tableFormCancel').addEventListener('click', function ()
     document.getElementById('tableFormModal').classList.add('hidden');
 });
 
+/* ===== WHATSAPP NUMBERS ===== */
+var waEditingId = null;
+
+function loadWaNumbers() {
+    showLoading('#waTable tbody');
+    api('/wa-numbers').then(function (items) {
+        var tbody = document.querySelector('#waTable tbody');
+        tbody.innerHTML = '';
+        items.forEach(function (w) {
+            var tr = document.createElement('tr');
+            tr.className = 'border-b border-gray-700 hover:bg-gray-700/50';
+            var defaultBadge = w.is_default ? '<span class="text-green-400"><i class="fas fa-check-circle"></i></span>' : '<span class="text-gray-600">-</span>';
+            var testerBadge = w.is_tester ? '<span class="text-yellow-400"><i class="fas fa-flask"></i></span>' : '<span class="text-gray-600">-</span>';
+            var activeBadge = w.is_active ? '<span class="text-green-400"><i class="fas fa-check"></i></span>' : '<span class="text-red-400"><i class="fas fa-times"></i></span>';
+            tr.innerHTML = '<td class="py-2 px-3 text-xs text-gray-400">#' + esc(w.id) + '</td><td class="py-2 px-3 text-sm font-mono">+' + esc(w.number) + '</td><td class="py-2 px-3 text-sm">' + esc(w.label || '-') + '</td><td class="py-2 px-3">' + defaultBadge + '</td><td class="py-2 px-3">' + testerBadge + '</td><td class="py-2 px-3">' + activeBadge + '</td><td class="py-2 px-3"><button class="text-blue-400 hover:text-blue-300 mr-2" onclick="editWa(' + esc(w.id) + ')"><i class="fas fa-edit"></i></button><button class="text-red-400 hover:text-red-300" onclick="deleteWa(' + esc(w.id) + ')"><i class="fas fa-trash"></i></button></td>';
+            tbody.appendChild(tr);
+        });
+    });
+}
+
+function editWa(id) {
+    waEditingId = id;
+    api('/wa-numbers').then(function (items) {
+        var w = items.find(function (x) { return x.id === id; });
+        if (!w) return;
+        document.getElementById('waNumber').value = w.number;
+        document.getElementById('waLabel').value = w.label || '';
+        document.getElementById('waDefault').checked = w.is_default ? true : false;
+        document.getElementById('waTester').checked = w.is_tester ? true : false;
+        document.getElementById('waActive').checked = w.is_active ? true : false;
+        document.getElementById('waModalTitle').textContent = 'Edit Nomor WhatsApp';
+        document.getElementById('waFormModal').classList.remove('hidden');
+    });
+}
+
+function deleteWa(id) {
+    confirmDelete('Hapus nomor WhatsApp ini?', function () {
+        api('/wa-numbers/' + id, { method: 'DELETE' }).then(function (res) {
+            if (res && res.error) { adminToast(res.error, 'error'); return; }
+            loadWaNumbers();
+            adminToast('Nomor WA berhasil dihapus', 'success');
+        }).catch(function () {
+            adminToast('Gagal menghapus nomor WA', 'error');
+        });
+    });
+}
+
+document.getElementById('addWaBtn').addEventListener('click', function () {
+    waEditingId = null;
+    document.getElementById('waNumber').value = '';
+    document.getElementById('waLabel').value = '';
+    document.getElementById('waDefault').checked = false;
+    document.getElementById('waTester').checked = false;
+    document.getElementById('waActive').checked = true;
+    document.getElementById('waModalTitle').textContent = 'Tambah Nomor WhatsApp';
+    document.getElementById('waFormModal').classList.remove('hidden');
+});
+
+document.getElementById('waForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+    var data = {
+        number: document.getElementById('waNumber').value,
+        label: document.getElementById('waLabel').value,
+        is_default: document.getElementById('waDefault').checked ? 1 : 0,
+        is_tester: document.getElementById('waTester').checked ? 1 : 0,
+        is_active: document.getElementById('waActive').checked ? 1 : 0
+    };
+    var url = waEditingId ? ('/wa-numbers/' + waEditingId) : '/wa-numbers';
+    var method = waEditingId ? 'PUT' : 'POST';
+    api(url, { method: method, body: JSON.stringify(data) }).then(function (res) {
+        if (res && res.error) { adminToast(res.error, 'error'); btn.disabled = false; btn.innerHTML = 'Simpan'; return; }
+        document.getElementById('waFormModal').classList.add('hidden');
+        loadWaNumbers();
+        adminToast(waEditingId ? 'Nomor WA berhasil diupdate' : 'Nomor WA berhasil ditambah', 'success');
+        btn.disabled = false; btn.innerHTML = 'Simpan';
+    }).catch(function () {
+        adminToast('Gagal menyimpan nomor WA', 'error');
+        btn.disabled = false; btn.innerHTML = 'Simpan';
+    });
+});
+
+document.getElementById('waFormCancel').addEventListener('click', function () {
+    document.getElementById('waFormModal').classList.add('hidden');
+});
+
 /* ===== NAVIGATION ===== */
 document.querySelectorAll('.nav-item').forEach(function (el) {
     el.addEventListener('click', function () {
@@ -595,6 +683,7 @@ document.querySelectorAll('.nav-item').forEach(function (el) {
         if (view === 'viewTestimonials') loadTestimonials();
         if (view === 'viewGallery') loadGallery();
         if (view === 'viewTables') loadTables();
+        if (view === 'viewWaNumbers') loadWaNumbers();
     });
 });
 
@@ -605,6 +694,7 @@ document.getElementById('hamburgerAdmin').addEventListener('click', function () 
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('waFormModal').classList.add('hidden');
         document.getElementById('tableFormModal').classList.add('hidden');
         document.getElementById('tableAssignModal').classList.add('hidden');
         deleteCallback = null;

@@ -9,6 +9,8 @@
 .menu-modal.open { display: flex; }
 #cartModal { display: none; }
 #cartModal.open { display: flex; }
+#waModal { display: none; }
+#waModal.open { display: flex; }
 
 .nav-drawer { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
 .nav-drawer.open { transform: translateX(0); }

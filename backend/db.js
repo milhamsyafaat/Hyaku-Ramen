@@ -33,6 +33,8 @@ function initialize() {
     db.exec('CREATE TABLE IF NOT EXISTS payments (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, transaction_id TEXT DEFAULT "", gross_amount INTEGER NOT NULL, status TEXT DEFAULT "pending", payment_type TEXT DEFAULT "", transaction_time TEXT DEFAULT "", snap_token TEXT DEFAULT "", snap_redirect_url TEXT DEFAULT "", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
     db.exec('CREATE TABLE IF NOT EXISTS email_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, to_email TEXT NOT NULL, subject TEXT DEFAULT "", message TEXT DEFAULT "", status TEXT DEFAULT "sent", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
 
+    db.exec('CREATE TABLE IF NOT EXISTS wa_numbers (id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT NOT NULL UNIQUE, label TEXT DEFAULT "", is_default INTEGER DEFAULT 0, is_tester INTEGER DEFAULT 0, is_active INTEGER DEFAULT 1, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+
     try { db.exec('ALTER TABLE reservations ADD COLUMN table_id INTEGER DEFAULT NULL REFERENCES tables(id)'); } catch (e) {}
     try { db.exec('ALTER TABLE orders ADD COLUMN email TEXT DEFAULT ""'); } catch (e) {}
     try { db.exec('ALTER TABLE orders ADD COLUMN payment_id INTEGER DEFAULT NULL REFERENCES payments(id)'); } catch (e) {}
@@ -47,10 +49,17 @@ function initialize() {
         });
     }
 
+    var waCount = db.prepare('SELECT COUNT(*) as c FROM wa_numbers').get();
+    if (waCount.c === 0) {
+        db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('6285174074352', 'Hyaku Ramen Official', 1, 0, 1);
+        db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('088293426204', 'Hyaku Ramen Tester', 0, 1, 1);
+    }
+
     var adminCount = db.prepare('SELECT COUNT(*) as c FROM admin_users').get();
     if (adminCount.c === 0) {
-        var hash = bcrypt.hashSync('HyakuAdmin123!', 10);
+        var hash = bcrypt.hashSync('Hyakuadmin', 10);
         db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run('admin', hash);
+
     }
 }
 

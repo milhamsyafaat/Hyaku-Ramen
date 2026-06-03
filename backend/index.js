@@ -35,26 +35,32 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/tables', require('./routes/tables'));
+app.use('/api/wa-numbers', require('./routes/wa-numbers'));
 app.use('/api/payments', require('./routes/payments'));
+app.use('/api/config', require('./routes/config'));
 
 if (isDev) {
-    var rootDir = path.join(__dirname, '..');
-    console.log('DEV mode: serving static files');
-    app.use(express.static(rootDir));
-    app.use('/admin', express.static(path.join(rootDir, 'admin')));
+    var frontendDir = path.join(__dirname, '..', 'frontend');
+    var adminDir = path.join(__dirname, '..', 'admin');
+    console.log('DEV mode: serving frontend/ and admin/');
+    app.use(express.static(frontendDir));
+    app.use('/admin', express.static(adminDir));
     app.get('/admin/*', function (req, res) {
-        res.sendFile(path.join(rootDir, 'admin', 'index.html'));
+        res.sendFile(path.join(adminDir, 'index.html'));
     });
     app.get('*', function (req, res) {
-        res.sendFile(path.join(rootDir, 'frontend', 'index.html'));
+        res.sendFile(path.join(frontendDir, 'index.html'));
     });
 } else {
-    app.use('/admin', express.static(path.join(__dirname, '..', 'admin')));
+    var frontendDir = path.join(__dirname, '..', 'frontend');
+    var adminDir = path.join(__dirname, '..', 'admin');
+    app.use(express.static(frontendDir));
+    app.use('/admin', express.static(adminDir));
     app.get('/admin/*', function (req, res) {
-        res.sendFile(path.join(__dirname, '..', 'admin', 'index.html'));
+        res.sendFile(path.join(adminDir, 'index.html'));
     });
-    app.all('*', function (req, res) {
-        res.status(404).json({ error: 'API endpoint not found' });
+    app.get('*', function (req, res) {
+        res.sendFile(path.join(frontendDir, 'index.html'));
     });
 }
 
@@ -62,9 +68,8 @@ db.initialize();
 
 app.listen(PORT, function () {
     console.log('Hyaku Ramen API server running on http://localhost:' + PORT);
-    if (isDev) {
-        console.log('Website: http://localhost:' + PORT);
-        console.log('Admin: http://localhost:' + PORT + '/admin/');
-        console.log('Default login: admin / HyakuAdmin123!');
-    }
+    console.log('Website: http://localhost:' + PORT);
+    console.log('Admin: http://localhost:' + PORT + '/admin/');
+    console.log('Default login: admin / Hyakuadmin');
+
 });

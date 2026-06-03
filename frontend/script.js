@@ -27,6 +27,83 @@ function showToast(message, type) {
     }, 3000);
 }
 
+/* ===== WA NUMBER SELECTION ===== */
+var __waNumbers = [];
+
+function __waLoad() {
+    var defaultNum = WA_NUMBER || '6285174074352';
+    var testerNum = (typeof WA_NUMBER_TESTER !== 'undefined') ? WA_NUMBER_TESTER : '088293426204';
+    __waNumbers = [
+        { number: defaultNum, label: 'Hyaku Ramen Official', is_default: 1, is_tester: 0 },
+        { number: testerNum, label: 'Hyaku Ramen Tester', is_default: 0, is_tester: 1 }
+    ];
+    fetch('/api/wa-numbers/active').then(function (r) { return r.json(); }).then(function (res) {
+        if (res.data && res.data.length > 0) {
+            __waNumbers = res.data;
+        }
+    }).catch(function () {});
+}
+
+function openWaSelection(text) {
+    if (__waNumbers.length === 0) {
+        __waLoad();
+        setTimeout(function () { openWaSelection(text); }, 300);
+        return;
+    }
+    var modal = $('waModal');
+    var list = $('waModalList');
+    var hint = $('waModalHint');
+    if (!modal || !list) return;
+    list.innerHTML = '';
+    __waNumbers.forEach(function (w) {
+        var isTester = w.is_tester ? true : false;
+        var isDefault = w.is_default ? true : false;
+        var btn = document.createElement('button');
+        btn.className = 'w-full text-left px-4 py-3 rounded-xl border transition flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700';
+        if (isDefault) {
+            btn.className += ' border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20';
+        } else if (isTester) {
+            btn.className += ' border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20';
+        } else {
+            btn.className += ' border-gray-200 dark:border-gray-600';
+        }
+        var badge = isDefault ? '<span class="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">Official</span>' : (isTester ? '<span class="text-xs bg-yellow-500 text-white px-2 py-0.5 rounded-full">Tester</span>' : '');
+        var waUrl = 'https://wa.me/' + w.number.replace(/[^0-9]/g, '') + (text ? '?text=' + encodeURIComponent(text) : '');
+        btn.innerHTML = '<div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center text-green-600 dark:text-green-400 flex-shrink-0"><i class="fab fa-whatsapp text-lg"></i></div><div class="flex-1 min-w-0"><p class="font-semibold text-sm text-gray-800 dark:text-gray-200 truncate">' + (w.label || 'WhatsApp') + '</p><p class="text-xs text-gray-500 dark:text-gray-400">+' + w.number + '</p></div>' + badge;
+        btn.addEventListener('click', function () {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+            window.open(waUrl, '_blank');
+        });
+        list.appendChild(btn);
+    });
+    if (hint) {
+        hint.textContent = isTesterHint;
+    }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+var isTesterHint = 'Nomor Tester digunakan untuk percobaan / testing.';
+
+(function waModalInit() {
+    var modal = $('waModal');
+    var closeBtn = $('waModalClose');
+    if (!modal || !closeBtn) return;
+    function closeWaModal() {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    closeBtn.addEventListener('click', closeWaModal);
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeWaModal();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeWaModal();
+    });
+    __waLoad();
+})();
+
 /* ===== CART STATE ===== */
 var __cart = [];
 function __cartAdd(item) {
@@ -271,7 +348,7 @@ __cartUpdateUI();
                 if (mmTitle) mmTitle.textContent = item.name;
                 if (mmPrice) mmPrice.textContent = item.price;
                 if (mmDesc) mmDesc.textContent = item.desc;
-                if (mmWa) mmWa.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent('Halo Hyaku Ramen, saya ingin pesan ' + item.name + ' (' + item.price + ').');
+                if (mmWa) { mmWa.href = 'javascript:void(0)'; mmWa.onclick = function () { openWaSelection('Halo Hyaku Ramen, saya ingin pesan ' + item.name + ' (' + item.price + ').'); return false; }; }
                 if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
                 var mmAddBtn = $('mmAddCartBtn');
                 if (mmAddBtn) {
@@ -528,6 +605,14 @@ __cartUpdateUI();
     });
 })();
 
+/* ===== POST HELPER (handle errors properly) ===== */
+function apiPost(url, data, btn) {
+    return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(function (r) {
+        if (!r.ok) { return r.json().then(function (e) { throw new Error(e.error || 'Request failed'); }); }
+        return r.json();
+    });
+}
+
 /* ===== RESERVATION FORM ===== */
 (function reservationForm() {
     var form = $('reservationForm');
@@ -552,17 +637,22 @@ __cartUpdateUI();
             return;
         }
         if (resBtn) { resBtn.disabled = true; resBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...'; }
-        fetch('/api/reservations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, phone: phone, guests: parseInt(guests), date: date, time: time, notes: notes }) }).catch(function () {});
-        var text = 'Halo Hyaku Ramen, saya ingin reservasi.%0A'
-            + 'Nama: ' + name + '%0A'
-            + 'No. Telepon: ' + phone + '%0A'
-            + 'Jumlah Tamu: ' + guests + '%0A'
-            + 'Tanggal: ' + date + '%0A'
+        var data = { name: name, phone: phone, guests: parseInt(guests), date: date, time: time, notes: notes };
+        apiPost('/api/reservations', data, resBtn).then(function () {
+            showToast('Permintaan reservasi dikirim!', 'success');
+        }).catch(function (err) {
+            showToast('Gagal mengirim reservasi: ' + (err.message || 'coba lagi'), 'error');
+        }).finally(function () {
+            if (resBtn) { resBtn.disabled = false; resBtn.innerHTML = 'Kirim Permintaan Reservasi'; }
+        });
+        var text = 'Halo Hyaku Ramen, saya ingin reservasi.\n'
+            + 'Nama: ' + name + '\n'
+            + 'No. Telepon: ' + phone + '\n'
+            + 'Jumlah Tamu: ' + guests + '\n'
+            + 'Tanggal: ' + date + '\n'
             + 'Waktu: ' + time;
-        if (notes) text += '%0A Catatan: ' + notes;
-        window.open('https://wa.me/' + WA_NUMBER + '?text=' + text, '_blank');
-        showToast('Permintaan reservasi dikirim!', 'success');
-        if (resBtn) { resBtn.disabled = false; resBtn.innerHTML = 'Kirim Permintaan Reservasi'; }
+        if (notes) text += '\nCatatan: ' + notes;
+        openWaSelection(text);
     });
 })();
 
@@ -582,14 +672,19 @@ __cartUpdateUI();
             return;
         }
         if (contactBtn) { contactBtn.disabled = true; contactBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...'; }
-        fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, phone: phone, subject: subject, message: message }) }).catch(function () {});
+        var data = { name: name, phone: phone, subject: subject, message: message };
+        apiPost('/api/contact', data, contactBtn).then(function () {
+            showToast('Pesan terkirim!', 'success');
+        }).catch(function (err) {
+            showToast('Gagal mengirim pesan: ' + (err.message || 'coba lagi'), 'error');
+        }).finally(function () {
+            if (contactBtn) { contactBtn.disabled = false; contactBtn.innerHTML = 'Kirim Pesan'; }
+        });
         var text = 'Halo Hyaku Ramen, saya ' + name + '.';
         if (phone) text += ' No. Telepon: ' + phone + '.';
         if (subject) text += ' (' + subject + ')';
         text += ' ' + message;
-        window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text), '_blank');
-        showToast('Pesan terkirim!', 'success');
-        if (contactBtn) { contactBtn.disabled = false; contactBtn.innerHTML = 'Kirim Pesan'; }
+        openWaSelection(text);
     });
 })();
 
@@ -608,10 +703,33 @@ __cartUpdateUI();
         var email = input.value.trim();
         if (!email) return;
         try { localStorage.setItem('newsletter_email', email); } catch (e) {}
-        fetch('/api/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).catch(function () {});
-        showToast('Terima kasih! ' + email + ' telah terdaftar.', 'success');
-        form.reset();
+        apiPost('/api/newsletter', { email: email }).then(function () {
+            showToast('Terima kasih! ' + email + ' telah terdaftar.', 'success');
+            form.reset();
+        }).catch(function (err) {
+            showToast('Gagal daftar newsletter: ' + (err.message || 'coba lagi'), 'error');
+        });
     });
+})();
+
+/* ===== MIDTRANS SNAP LOADER ===== */
+var __snapLoaded = false;
+var __snapClientKey = null;
+
+function loadSnap(clientKey) {
+    if (__snapLoaded) return;
+    __snapClientKey = clientKey;
+    var script = document.createElement('script');
+    script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+    script.setAttribute('data-client-key', clientKey);
+    script.onload = function () { __snapLoaded = true; };
+    document.head.appendChild(script);
+}
+
+(function fetchMidtransConfig() {
+    fetch('/api/config').then(function (r) { return r.json(); }).then(function (cfg) {
+        if (cfg.midtrans_client_key) loadSnap(cfg.midtrans_client_key);
+    }).catch(function () {});
 })();
 
 /* ===== CART UI ===== */
@@ -701,29 +819,44 @@ __cartUpdateUI();
                 items.push({ id: item.id, name: item.name, qty: item.qty, price: item.price, priceNum: item.priceNum });
                 total += item.priceNum * item.qty;
             }
-            fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, total: total, customer_name: name, customer_phone: phone, email: email }) }).then(function (r) { return r.json(); }).then(function (data) {
+            apiPost('/api/orders', { items: items, total: total, customer_name: name, customer_phone: phone, email: email }).then(function (data) {
                 __cart = [];
                 __cartSave();
                 __cartUpdateUI();
                 render();
-                if (data.snap_redirect_url) {
-                    var payConfirm = confirm('Pesanan berhasil! Klik OK untuk melanjutkan ke pembayaran, atau Batal untuk chat WhatsApp.');
-                    if (payConfirm) {
-                        window.open(data.snap_redirect_url, '_blank');
-                    }
-                }
-                var text = 'Halo Hyaku Ramen, saya ingin pesan:%0A';
+                close();
+                var text = 'Halo Hyaku Ramen, saya ingin pesan:\n';
                 for (var j = 0; j < items.length; j++) {
                     var ci = items[j];
-                    text += '- ' + ci.name + ' x' + ci.qty + ' (' + ci.price + ')%0A';
+                    text += '- ' + ci.name + ' x' + ci.qty + ' (' + ci.price + ')\n';
                 }
-                text += '%0ATotal: Rp ' + total.toLocaleString('id-ID');
-                if (name) text += '%0ANama: ' + name;
-                if (phone) text += '%0ANo. HP: ' + phone;
-                window.open('https://wa.me/' + WA_NUMBER + '?text=' + text, '_blank');
-                showToast('Pesanan berhasil dikirim!', 'success');
-            }).catch(function () {
-                showToast('Gagal memproses pesanan, coba lagi.', 'error');
+                text += '\nTotal: Rp ' + total.toLocaleString('id-ID');
+                if (name) text += '\nNama: ' + name;
+                if (phone) text += '\nNo. HP: ' + phone;
+                if (data.snap_token && window.snap && __snapLoaded) {
+                    showToast('Membuka pembayaran...', 'info');
+                    window.snap.pay(data.snap_token, {
+                        onSuccess: function () {
+                            showToast('Pembayaran berhasil! Pesanan diproses.', 'success');
+                            openWaSelection(text);
+                        },
+                        onPending: function () {
+                            showToast('Pembayaran pending, tunggu konfirmasi.', 'info');
+                            openWaSelection(text);
+                        },
+                        onError: function () {
+                            showToast('Pembayaran gagal, coba lagi.', 'error');
+                        },
+                        onClose: function () {
+                            showToast('Pembayaran ditutup. Pesanan tetap tersimpan.', 'warning');
+                        }
+                    });
+                } else {
+                    showToast('Pesanan berhasil dikirim!', 'success');
+                    openWaSelection(text);
+                }
+            }).catch(function (err) {
+                showToast('Gagal memproses pesanan: ' + (err.message || 'coba lagi.'), 'error');
             }).finally(function () {
                 checkoutBtn.disabled = false;
                 checkoutBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Pesan via WhatsApp';

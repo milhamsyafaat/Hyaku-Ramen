@@ -18,6 +18,7 @@ router.get('/stats', authMiddleware, function (req, res) {
         var newsletterCount = db.prepare('SELECT COUNT(*) as c FROM newsletter_subscribers').get();
         var tableCount = db.prepare('SELECT COUNT(*) as c FROM tables').get();
         var availableTables = db.prepare("SELECT COUNT(*) as c FROM tables WHERE status = 'available'").get();
+        var waNumberCount = db.prepare('SELECT COUNT(*) as c FROM wa_numbers').get();
         res.json({
             menuCount: menuCount.c,
             orderCount: orderCount.c,
@@ -29,7 +30,8 @@ router.get('/stats', authMiddleware, function (req, res) {
             galleryCount: galleryCount.c,
             newsletterCount: newsletterCount.c,
             tableCount: tableCount.c,
-            availableTables: availableTables.c
+            availableTables: availableTables.c,
+            waNumberCount: waNumberCount.c
         });
     } catch (e) {
         console.error('GET /api/admin/stats error:', e);
