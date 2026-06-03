@@ -1,3 +1,6 @@
+/* ===== API BASE URL ===== */
+var API_URL = (window.API_URL || '').replace(/\/$/, '');
+
 /* ===== DOM HELPERS ===== */
 var $ = function (id) { return document.getElementById(id); };
 var qs = function (sel) { return document.querySelector(sel); };
@@ -282,7 +285,7 @@ __cartUpdateUI();
     }
 
     function loadMenu() {
-        fetch('/api/menu').then(function (r) { return r.json(); }).then(function (res) {
+        fetch(API_URL + '/menu').then(function (r) { return r.json(); }).then(function (res) {
             menuData = res.data || res;
             render(currentFilter);
         }).catch(function () {
@@ -324,7 +327,7 @@ __cartUpdateUI();
         grid.innerHTML = html;
     }
 
-    fetch('/api/gallery').then(function (r) { return r.json(); }).then(function (res) {
+    fetch(API_URL + '/gallery').then(function (r) { return r.json(); }).then(function (res) {
         render(res.data || res);
     }).catch(function () {
         render(GALLERY_DATA);
@@ -480,7 +483,7 @@ __cartUpdateUI();
         }
     }
 
-    fetch('/api/testimonials').then(function (r) { return r.json(); }).then(function (res) {
+    fetch(API_URL + '/testimonials').then(function (r) { return r.json(); }).then(function (res) {
         init(res.data || res);
     }).catch(function () {
         init(TESTIMONIALS);
@@ -552,7 +555,7 @@ __cartUpdateUI();
             return;
         }
         if (resBtn) { resBtn.disabled = true; resBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...'; }
-        fetch('/api/reservations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, phone: phone, guests: parseInt(guests), date: date, time: time, notes: notes }) }).catch(function () {});
+        fetch(API_URL + '/reservations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, phone: phone, guests: parseInt(guests), date: date, time: time, notes: notes }) }).catch(function () {});
         var text = 'Halo Hyaku Ramen, saya ingin reservasi.%0A'
             + 'Nama: ' + name + '%0A'
             + 'No. Telepon: ' + phone + '%0A'
@@ -582,7 +585,7 @@ __cartUpdateUI();
             return;
         }
         if (contactBtn) { contactBtn.disabled = true; contactBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...'; }
-        fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, phone: phone, subject: subject, message: message }) }).catch(function () {});
+        fetch(API_URL + '/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, phone: phone, subject: subject, message: message }) }).catch(function () {});
         var text = 'Halo Hyaku Ramen, saya ' + name + '.';
         if (phone) text += ' No. Telepon: ' + phone + '.';
         if (subject) text += ' (' + subject + ')';
@@ -608,7 +611,7 @@ __cartUpdateUI();
         var email = input.value.trim();
         if (!email) return;
         try { localStorage.setItem('newsletter_email', email); } catch (e) {}
-        fetch('/api/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).catch(function () {});
+        fetch(API_URL + '/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).catch(function () {});
         showToast('Terima kasih! ' + email + ' telah terdaftar.', 'success');
         form.reset();
     });
@@ -701,7 +704,7 @@ __cartUpdateUI();
                 items.push({ id: item.id, name: item.name, qty: item.qty, price: item.price, priceNum: item.priceNum });
                 total += item.priceNum * item.qty;
             }
-            fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, total: total, customer_name: name, customer_phone: phone, email: email }) }).then(function (r) { return r.json(); }).then(function (data) {
+            fetch(API_URL + '/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, total: total, customer_name: name, customer_phone: phone, email: email }) }).then(function (r) { return r.json(); }).then(function (data) {
                 __cart = [];
                 __cartSave();
                 __cartUpdateUI();

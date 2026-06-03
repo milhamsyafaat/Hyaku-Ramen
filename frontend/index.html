@@ -679,6 +679,11 @@
     </footer>
 
     <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // API_URL is injected here so script.js can reach the backend on its own domain.
+        // Update this value if the backend URL changes.
+        window.API_URL = 'https://hyaku-ramen-production.up.railway.app/api';
+    </script>
     <script src="images.js"></script>
     <script src="data.js"></script>
     <script src="script.js"></script>
