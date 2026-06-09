@@ -38,6 +38,7 @@ function initialize() {
     try { db.exec('ALTER TABLE reservations ADD COLUMN table_id INTEGER DEFAULT NULL REFERENCES tables(id)'); } catch (e) {}
     try { db.exec('ALTER TABLE orders ADD COLUMN email TEXT DEFAULT ""'); } catch (e) {}
     try { db.exec('ALTER TABLE orders ADD COLUMN payment_id INTEGER DEFAULT NULL REFERENCES payments(id)'); } catch (e) {}
+    try { db.exec("ALTER TABLE orders ADD COLUMN payment_method TEXT DEFAULT 'manual'"); } catch (e) {}
 
     var count = db.prepare('SELECT COUNT(*) as c FROM menu_items').get();
     if (count.c === 0) { seed(db); }

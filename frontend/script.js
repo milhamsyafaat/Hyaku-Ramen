@@ -738,6 +738,37 @@ function loadSnap(clientKey) {
     }).catch(function () {});
 })();
 
+/* ===== RECEIPT MODAL ===== */
+function openReceipt(orderId, name, phone, items, total) {
+    var modal = $('receiptModal');
+    if (!modal) return;
+    $('receiptId').textContent = 'ID: #' + orderId;
+    $('receiptName').textContent = name || '-';
+    $('receiptPhone').textContent = phone || '-';
+    $('receiptTotal').textContent = 'Rp ' + total.toLocaleString('id-ID');
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+        var ci = items[i];
+        html += '<div class="flex justify-between text-sm"><span>' + esc(ci.name) + ' x' + ci.qty + '</span><span class="font-medium">' + esc(ci.price) + '</span></div>';
+    }
+    $('receiptItems').innerHTML = html;
+    modal.classList.add('flex');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+(function receiptModal() {
+    var modal = $('receiptModal');
+    if (!modal) return;
+    function close() {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    $('receiptCloseBtn').addEventListener('click', close);
+    $('receiptCloseBtn2').addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+})();
+
 /* ===== CART UI ===== */
 (function cartUI() {
     var modal = $('cartModal');
@@ -858,7 +889,7 @@ function loadSnap(clientKey) {
                         }
                     });
                 } else {
-                    showToast('Pesanan berhasil dikirim!', 'success');
+                    openReceipt(data.id, name, phone, items, total);
                     openWaSelection(text);
                 }
             }).catch(function (err) {
