@@ -100,7 +100,7 @@ var IMG_DRY_HYAKU = 'https://images.unsplash.com/photo-1690650453129-b521970d124
 var IMG_DRY_KATSU = 'https://images.pexels.com/photos/17592738/pexels-photo-17592738.jpeg';
 var IMG_KATSU = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthfvnext.bing.com%2Fth%2Fid%2FOIP.LtN4dOirvdYU6HlTsSUQSgHaE8%3Fr%3D0%26cb%3Dthfvnextfalcon2%26pid%3DApi&f=1&ipt=288ee0e5786b8d1798d59e6a582e960976db720a939720154b7585e174e3d509&ipo=images';
 var IMG_KATSU_CURRY = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.fPE00prlmdqo5npzpWJ_2QHaHa%3Fpid%3DApi&f=1&ipt=014e417f84e6118fefa537a46e020913bcb5e76b05d1120c1802c27be41291bd&ipo=images';
-var IMG_OCHA = 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80';
+var IMG_OCHA = 'https://images.pexels.com/photos/35042573/pexels-photo-35042573.jpeg';
 var IMG_TEH_TARIK = 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=400&q=80';
 var IMG_LEMON_TEA = 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=400&q=80';
 var IMG_AIR = 'https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=400&q=80';
@@ -122,7 +122,7 @@ var menuData = [
     { id: 'm5', cat: 'dry', name: 'Dry Katsu Ramen', price: 'Rp 28.000', priceNum: 28000, badge: '', badgeClass: '', desc: 'Ramen kering dengan chicken katsu gurih di atasnya.', img: IMG_DRY_KATSU },
     { id: 'm6', cat: 'katsu', name: 'Chicken Katsu', price: 'Rp 15.000', priceNum: 15000, badge: 'Side Dish', badgeClass: 'text-gray-500', desc: 'Chicken katsu renyah dengan saus katsu spesial.', img: IMG_KATSU },
     { id: 'm7', cat: 'katsu', name: 'Katsu Curry Rice', price: 'Rp 22.000', priceNum: 22000, badge: '', badgeClass: '', desc: 'Nasi dengan chicken katsu dan saus kari Jepang yang kental dan gurih.', img: IMG_KATSU_CURRY },
-    { id: 'm8', cat: 'minuman', name: 'Ocha (Es / Hangat)', price: 'Rp 5.000', priceNum: 5000, badge: '', badgeClass: '', desc: 'Japanese green tea yang menyegarkan.', img: IMG_OCHA },
+    { id: 'm8', cat: 'minuman', name: 'Ocha Tea', price: 'Rp 5.000', priceNum: 5000, badge: '', badgeClass: '', desc: 'Japanese green tea yang menyegarkan.', img: IMG_OCHA },
     { id: 'm9', cat: 'minuman', name: 'Teh Tarik', price: 'Rp 7.000', priceNum: 7000, badge: '', badgeClass: '', desc: 'Teh tarik khas dengan rasa creamy dan legit.', img: IMG_TEH_TARIK },
     { id: 'm10', cat: 'minuman', name: 'Lemon Tea', price: 'Rp 7.000', priceNum: 7000, badge: '', badgeClass: '', desc: 'Lemon tea segar, perasan jeruk lemon asli.', img: IMG_LEMON_TEA },
     { id: 'm11', cat: 'minuman', name: 'Air Mineral', price: 'Rp 4.000', priceNum: 4000, badge: '', badgeClass: '', desc: 'Air mineral kemasan ukuran 600ml.', img: IMG_AIR },

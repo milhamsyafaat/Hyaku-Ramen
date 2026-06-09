@@ -7,7 +7,7 @@ var MENU_DATA = [
     { id: 'm5', cat: 'dry', name: 'Dry Katsu Ramen', price: 'Rp 28.000', priceNum: 28000, badge: '', badgeClass: '', desc: 'Ramen kering dengan chicken katsu gurih di atasnya. Perpaduan tekstur yang sempurna.', img: IMG_DRY_KATSU },
     { id: 'm6', cat: 'katsu', name: 'Chicken Katsu', price: 'Rp 15.000', priceNum: 15000, badge: 'Side Dish', badgeClass: 'text-gray-500', desc: 'Chicken katsu renyah dengan saus katsu spesial. Cocok sebagai pendamping ramen.', img: IMG_KATSU },
     { id: 'm7', cat: 'katsu', name: 'Katsu Curry Rice', price: 'Rp 22.000', priceNum: 22000, badge: '', badgeClass: '', desc: 'Nasi dengan chicken katsu dan saus kari Jepang yang kental dan gurih.', img: IMG_KATSU_CURRY },
-    { id: 'm8', cat: 'minuman', name: 'Ocha (Es / Hangat)', price: 'Rp 5.000', priceNum: 5000, badge: '', badgeClass: '', desc: 'Japanese green tea yang menyegarkan, bisa dinikmati dingin atau hangat.', img: IMG_OCHA },
+    { id: 'm8', cat: 'minuman', name: 'Ocha Tea', price: 'Rp 5.000', priceNum: 5000, badge: '', badgeClass: '', desc: 'Japanese green tea yang menyegarkan, bisa dinikmati dingin atau hangat.', img: IMG_OCHA },
     { id: 'm9', cat: 'minuman', name: 'Teh Tarik', price: 'Rp 7.000', priceNum: 7000, badge: '', badgeClass: '', desc: 'Teh tarik khas dengan rasa creamy dan legit.', img: IMG_TEH_TARIK },
     { id: 'm10', cat: 'minuman', name: 'Lemon Tea', price: 'Rp 7.000', priceNum: 7000, badge: '', badgeClass: '', desc: 'Lemon tea segar, perasan jeruk lemon asli.', img: IMG_LEMON_TEA },
     { id: 'm11', cat: 'minuman', name: 'Air Mineral', price: 'Rp 4.000', priceNum: 4000, badge: '', badgeClass: '', desc: 'Air mineral kemasan ukuran 600ml.', img: IMG_AIR },
