@@ -20,7 +20,8 @@ Express serves `frontend/` and `admin/` statically. No build step. No lint/test/
 Tailwind v3 CDN. Load order: `images.js` → `data.js` → `script.js`.  
 `images.js` provides `IMG_*`, `GAL_*`, `WA_NUMBER`, `WA_NUMBER_TESTER`.  
 `data.js` provides `MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS` (fallbacks when API down).  
-DOM helpers: `$('#id')`, `qs()`, `qa()`. XSS-safe `esc()` in both `frontend/script.js` and `admin/app.js`.
+DOM helpers: `$('#id')`, `qs()`, `qa()`. XSS-safe `esc()` in both `frontend/script.js` and `admin/app.js`.  
+POST helper: `apiPost(url, data)` returns JSON (or `{ok:true}`), throws on HTTP errors.
 
 ## Backend
 
@@ -28,17 +29,21 @@ DOM helpers: `$('#id')`, `qs()`, `qa()`. XSS-safe `esc()` in both `frontend/scri
 
 **Rate limiting** (15-min windows): `/api/*` 100 req, `/api/auth/login` 5 req, `/api/{contact,reservations,orders}` 10 req.
 
-**Routes**: `backend/routes/*.js` mounted at `backend/index.js:28-40`.
+**Routes**: `backend/routes/*.js` — 13 route files mounted in `backend/index.js`. Admin routes skip global rate limiter.
 
-**JWT** (`backend/middleware/auth.js`): fails hard in production without `JWT_SECRET` env; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry.
+**JWT** (`backend/middleware/auth.js`): fails hard in production without `JWT_SECRET` env; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry. Admin app stores token as `admin_token` in localStorage.
 
-**Default admin**: `admin` / `admin123` (auto-seeded on first start).
+**Default admin**: `admin` / `admin123` (auto-seeded on first start in `backend/db.js:60`).
 
 **.env** (`backend/.env`, gitignored): template exists but no `dotenv` loader — set vars in runtime environment.
 
 **Optional services**: Midtrans payments (`backend/services/midtrans.js`), nodemailer (`backend/services/email.js`). Notif endpoint: `POST /api/payments/notification`.
 
 **Unused deps** (never imported): `pg`, `http-proxy-middleware`.
+
+## Admin
+
+Single-page app, 822 lines, ES5. API wrapper: `api(path, options)` prepends `/api` and injects `authHeaders()` (reads `admin_token` from localStorage). No helper for POST — uses `fetch(API + '/auth/login', ...)` directly.
 
 ## Gotchas
 
