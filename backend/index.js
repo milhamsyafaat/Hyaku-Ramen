@@ -14,16 +14,18 @@ app.use(express.json({ limit: '1mb' }));
 
 var isDev = process.env.NODE_ENV !== 'production';
 
-var limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests, try again later' }, skip: function (req) { return req.path.startsWith('/api/admin'); } });
-app.use('/api/', limiter);
+if (!isDev) {
+    var limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests, try again later' }, skip: function (req) { return req.path.startsWith('/api/admin'); } });
+    app.use('/api/', limiter);
 
-var authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: { error: 'Too many login attempts, try again later' } });
-app.use('/api/auth/login', authLimiter);
+    var authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: { error: 'Too many login attempts, try again later' } });
+    app.use('/api/auth/login', authLimiter);
 
-var formLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Too many submissions, try again later' } });
-app.use('/api/contact', formLimiter);
-app.use('/api/reservations', formLimiter);
-app.use('/api/orders', formLimiter);
+    var formLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { error: 'Too many submissions, try again later' } });
+    app.use('/api/contact', formLimiter);
+    app.use('/api/reservations', formLimiter);
+    app.use('/api/orders', formLimiter);
+}
 
 app.use('/api/menu', require('./routes/menu'));
 app.use('/api/orders', require('./routes/orders'));
