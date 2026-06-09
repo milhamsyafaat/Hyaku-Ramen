@@ -48,7 +48,7 @@ router.get('/sales-recap', authMiddleware, function (req, res) {
         var params = [];
         if (from) params.push(from);
         if (to) params.push(to);
-        var sql = "SELECT date(o.created_at) as date, COUNT(*) as order_count, SUM(o.total) as revenue, SUM(CASE WHEN o.status = 'pending' THEN 1 ELSE 0 END) as pending, SUM(CASE WHEN o.status = 'confirmed' THEN 1 ELSE 0 END) as confirmed, SUM(CASE WHEN o.status = 'completed' THEN 1 ELSE 0 END) as completed, SUM(CASE WHEN o.status = 'cancelled' THEN 1 ELSE 0 END) as cancelled FROM orders o " + where + " GROUP BY date(o.created_at) ORDER BY date(o.created_at) DESC";
+        var sql = "SELECT date(o.created_at) as date, COUNT(*) as order_count, SUM(CASE WHEN o.status IN ('confirmed','completed') THEN o.total ELSE 0 END) as revenue, SUM(CASE WHEN o.status = 'pending' THEN 1 ELSE 0 END) as pending, SUM(CASE WHEN o.status = 'confirmed' THEN 1 ELSE 0 END) as confirmed, SUM(CASE WHEN o.status = 'completed' THEN 1 ELSE 0 END) as completed, SUM(CASE WHEN o.status = 'cancelled' THEN 1 ELSE 0 END) as cancelled, SUM(CASE WHEN o.status = 'pending' THEN o.total ELSE 0 END) as pending_revenue, SUM(CASE WHEN o.status = 'confirmed' THEN o.total ELSE 0 END) as confirmed_revenue, SUM(CASE WHEN o.status = 'completed' THEN o.total ELSE 0 END) as completed_revenue, SUM(CASE WHEN o.status = 'cancelled' THEN o.total ELSE 0 END) as cancelled_revenue FROM orders o " + where + " GROUP BY date(o.created_at) ORDER BY date(o.created_at) DESC";
         var stmt = db.prepare(sql);
         var rows = stmt.all.apply(stmt, params);
         res.json({ data: rows || [] });
