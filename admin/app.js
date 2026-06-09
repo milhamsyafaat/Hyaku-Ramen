@@ -745,7 +745,6 @@ function loadSales() {
         }
         document.getElementById('salesTotalOrders').textContent = stats.totalOrders || 0;
         document.getElementById('salesTotalRevenue').textContent = 'Rp ' + (stats.totalRevenue || 0).toLocaleString('id-ID');
-        document.getElementById('salesAvgOrder').textContent = stats.totalOrders ? 'Rp ' + Math.round(stats.totalRevenue / stats.totalOrders).toLocaleString('id-ID') : 'Rp 0';
         document.getElementById('salesCompleted').textContent = stats.totalCompleted || 0;
     }).catch(function () {
         document.querySelector('#salesTable tbody').innerHTML = '<tr><td colspan="7" class="py-8 text-center text-red-400">Gagal memuat data</td></tr>';

@@ -13,7 +13,7 @@ cd backend && npm install && npm start  # http://localhost:3001
 # npm run dev is identical
 ```
 
-Express serves `frontend/` and `admin/` statically. No build step. No lint/test/typecheck scripts.
+Express serves `frontend/` at root and `admin/` at `/admin/` in both dev and production. No build step. No lint/test/typecheck scripts.
 
 ## Frontend
 
@@ -29,13 +29,13 @@ POST helper: `apiPost(url, data)` returns JSON (or `{ok:true}`), throws on HTTP 
 
 **Rate limiting** (15-min windows, production only): `/api/*` 100 req, `/api/auth/login` 5 req, `/api/{contact,reservations,orders}` 10 req. Admin routes (`/api/admin/*`) skip global limiter.
 
-**Routes**: `backend/routes/*.js` — 12 files mounted in `backend/index.js:30-41`.
+**Routes**: `backend/routes/*.js` — 12 files mounted at `backend/index.js:30-41`.
 
-**JWT** (`backend/middleware/auth.js`): fails hard in production without `JWT_SECRET` env; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry (`backend/routes/auth.js:22`). Admin stores token as `admin_token` in localStorage.
+**JWT** (`backend/middleware/auth.js`): fails hard in production without `JWT_SECRET` env; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry (`backend/routes/auth.js:22`). Admin stores token as `admin_token` in localStorage. Protected routes have `req.admin` with decoded JWT payload.
 
-**Default admin** (seeded at `backend/db.js:61`): `admin` / `admin123`. Startup message at `backend/index.js:74` echoes this.
+**Default admin** (seeded at `backend/db.js:60-61`): `admin` / `admin123`. Startup message at `backend/index.js:74` echoes this.
 
-**.env** (`backend/.env`, gitignored): template exists but no `dotenv` loader — set vars in runtime environment.
+**.env** (`backend/.env`, gitignored): template only — no `dotenv` loader, set vars in runtime environment.
 
 **Optional services**: Midtrans payments (`backend/services/midtrans.js`), nodemailer (`backend/services/email.js`). Notif endpoint: `POST /api/payments/notification`.
 
@@ -43,7 +43,15 @@ POST helper: `apiPost(url, data)` returns JSON (or `{ok:true}`), throws on HTTP 
 
 ## Admin
 
-ES5 SPA. API wrapper: `api(path, options)` prepends `/api` and injects `authHeaders()` (reads `admin_token` from localStorage). No POST helper — login uses `fetch(API + '/auth/login', ...)` directly. Dashboard polls `/api/admin/stats` every 30s.
+ES5 SPA. API wrapper: `api(path, options)` prepends `/api`, injects `authHeaders()`, handles 429/401, and auto-extracts `.data` from array responses. No POST helper — login uses `fetch(API + '/auth/login', ...)` directly. Dashboard polls `/api/admin/stats` every 30s.
+
+## WhatsApp
+
+Source of truth: `wa_numbers` table (fields: `is_default`, `is_tester`, `is_active`). Frontend fetches from `/api/config`; fallback = `WA_NUMBER`/`WA_NUMBER_TESTER` from `images.js`. All WA links via `openWaSelection()` modal.
+
+## localStorage keys
+
+`cart`, `admin_token` (JWT), `admin_user`, `theme` (dark mode).
 
 ## Gotchas
 
@@ -52,15 +60,6 @@ ES5 SPA. API wrapper: `api(path, options)` prepends `/api` and injects `authHead
 - **Forms POST to `/api/*`** AND open WhatsApp via `openWaSelection()`. Fetches to `/api/wa-numbers/active` and `/api/config` are fire-and-forget (`.catch(function() {})`).
 - **Root `package-lock.json` is stale** (90 B, empty) — `backend/package.json` is the real manifest.
 - **Midtrans Snap URL hardcoded to sandbox** in `frontend/script.js:688`; `MIDTRANS_IS_PRODUCTION` only affects server-side.
-- **`TODO.md` is stale** — says admin pw changed to `Hyakuadmin` but code still seeds `admin123` (`backend/db.js:61`, `backend/index.js:74`).
-
-## WhatsApp
-
-Source of truth: `wa_numbers` table. Frontend fetches from `/api/config`; fallback = `WA_NUMBER`/`WA_NUMBER_TESTER` from `images.js`. All WA links via `openWaSelection()` modal.
-
-## localStorage keys
-
-`cart`, `admin_token` (JWT), `admin_user`, `theme` (dark mode).
 
 ## Deploy
 
