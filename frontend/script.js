@@ -752,16 +752,14 @@ function openReceipt(orderId, name, phone, items, total) {
         html += '<div class="flex justify-between text-sm"><span>' + esc(ci.name) + ' x' + ci.qty + '</span><span class="font-medium">' + esc(ci.price) + '</span></div>';
     }
     $('receiptItems').innerHTML = html;
-    modal.classList.add('flex');
-    modal.classList.remove('hidden');
+    modal.classList.add('open');
     document.body.style.overflow = 'hidden';
 }
 (function receiptModal() {
     var modal = $('receiptModal');
     if (!modal) return;
     function close() {
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
+        modal.classList.remove('open');
         document.body.style.overflow = '';
     }
     $('receiptCloseBtn').addEventListener('click', close);

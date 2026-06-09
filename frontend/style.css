@@ -11,6 +11,8 @@
 #cartModal.open { display: flex; }
 #waModal { display: none; z-index: 100; }
 #waModal.open { display: flex; }
+#receiptModal { display: none; }
+#receiptModal.open { display: flex; }
 #toastContainer { z-index: 90; }
 
 .nav-drawer { transform: translateX(100%); transition: transform 0.3s ease-in-out; }
