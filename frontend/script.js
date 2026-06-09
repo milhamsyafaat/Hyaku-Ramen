@@ -351,7 +351,7 @@ __cartUpdateUI();
                 if (mmTitle) mmTitle.textContent = item.name;
                 if (mmPrice) mmPrice.textContent = item.price;
                 if (mmDesc) mmDesc.textContent = item.desc;
-                if (mmWa) { mmWa.href = 'javascript:void(0)'; mmWa.onclick = function () { openWaSelection('Halo Hyaku Ramen, saya ingin pesan ' + item.name + ' (' + item.price + ').'); return false; }; }
+                if (mmWa) { mmWa.href = 'javascript:void(0)'; mmWa.onclick = function () { __pendingWaText = 'Halo Hyaku Ramen, saya ingin pesan ' + item.name + ' (' + item.price + ').'; openReceipt(null, '', '', item, item.priceNum); return false; }; }
                 if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
                 var mmAddBtn = $('mmAddCartBtn');
                 if (mmAddBtn) {
@@ -739,17 +739,28 @@ function loadSnap(clientKey) {
 })();
 
 /* ===== RECEIPT MODAL ===== */
+var __pendingWaText = '';
 function openReceipt(orderId, name, phone, items, total) {
     var modal = $('receiptModal');
     if (!modal) return;
-    $('receiptId').textContent = 'ID: #' + orderId;
+    var idEl = $('receiptId');
+    if (orderId) {
+        idEl.textContent = 'ID: #' + orderId;
+        idEl.style.display = '';
+    } else {
+        idEl.style.display = 'none';
+    }
     $('receiptName').textContent = name || '-';
     $('receiptPhone').textContent = phone || '-';
-    $('receiptTotal').textContent = 'Rp ' + total.toLocaleString('id-ID');
+    $('receiptTotal').textContent = 'Rp ' + (total || 0).toLocaleString('id-ID');
     var html = '';
-    for (var i = 0; i < items.length; i++) {
-        var ci = items[i];
-        html += '<div class="flex justify-between text-sm"><span>' + esc(ci.name) + ' x' + ci.qty + '</span><span class="font-medium">' + esc(ci.price) + '</span></div>';
+    if (Array.isArray(items)) {
+        for (var i = 0; i < items.length; i++) {
+            var ci = items[i];
+            html += '<div class="flex justify-between text-sm"><span>' + esc(ci.name) + ' x' + ci.qty + '</span><span class="font-medium">' + esc(ci.price) + '</span></div>';
+        }
+    } else if (items) {
+        html += '<div class="flex justify-between text-sm"><span>' + esc(items.name) + '</span><span class="font-medium">' + esc(items.price) + '</span></div>';
     }
     $('receiptItems').innerHTML = html;
     modal.classList.add('open');
@@ -764,6 +775,10 @@ function openReceipt(orderId, name, phone, items, total) {
     }
     $('receiptCloseBtn').addEventListener('click', close);
     $('receiptCloseBtn2').addEventListener('click', close);
+    $('receiptWaBtn').addEventListener('click', function () {
+        close();
+        if (__pendingWaText) openWaSelection(__pendingWaText);
+    });
     modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
 })();
 
@@ -887,8 +902,8 @@ function openReceipt(orderId, name, phone, items, total) {
                         }
                     });
                 } else {
+                    __pendingWaText = text;
                     openReceipt(data.id, name, phone, items, total);
-                    openWaSelection(text);
                 }
             }).catch(function (err) {
                 showToast('Gagal memproses pesanan: ' + (err.message || 'coba lagi.'), 'error');
