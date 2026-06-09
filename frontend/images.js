@@ -1,6 +1,6 @@
 /* ===== GAMBAR — Ganti URL di sini ===== */
 var WA_NUMBER = '6285174074352';
-var WA_NUMBER_TESTER = '088293426204';
+var WA_NUMBER_TESTER = '6288293426204';
 var IMG_LEGENDARY  = 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=400&q=80';
 var IMG_TANTAN     = 'https://images.unsplash.com/photo-1623341214825-9f4f963727da?auto=format&fit=crop&w=400&q=80';
 var IMG_TONKOTSU   = 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=400&q=80';
@@ -17,9 +17,9 @@ var IMG_EXTRA_CHASHU = 'https://images.unsplash.com/photo-1504674900247-0877df9c
 var IMG_SOFT_EGG    = 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=400&q=80';
 var IMG_NORI        = 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?auto=format&fit=crop&w=400&q=80';
 
-var GAL_1 = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80';
-var GAL_2 = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
-var GAL_3 = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80';
-var GAL_4 = 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=600&q=80';
-var GAL_5 = 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=600&q=80';
-var GAL_6 = 'https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?auto=format&fit=crop&w=600&q=80';
+var GAL_1 = 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?q=80&w=1170&auto=format&fit=crop';
+var GAL_2 = 'https://images.unsplash.com/photo-1721032740303-faa3480ec606?w=500&auto=format&fit=crop&q=60';
+var GAL_3 = 'https://images.unsplash.com/photo-1721032740303-faa3480ec606?w=500&auto=format&fit=crop&q=60';
+var GAL_4 = 'https://images.unsplash.com/photo-1614563637806-1d0e645e0940?w=500&auto=format&fit=crop&q=60';
+var GAL_5 = 'https://images.unsplash.com/photo-1618889482923-38250401a84e?w=500&auto=format&fit=crop&q=60';
+var GAL_6 = 'https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=500&auto=format&fit=crop&q=60';

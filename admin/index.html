@@ -49,6 +49,7 @@
                 <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewTables"><i class="fas fa-chair w-5"></i>Meja</button>
                 <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewWaNumbers"><i class="fab fa-whatsapp w-5"></i>WhatsApp</button>
                 <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewGallery"><i class="fas fa-images w-5"></i>Galeri</button>
+                <button class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm transition flex items-center gap-3 text-gray-300 hover:bg-gray-700 hover:text-white" data-view="viewSales"><i class="fas fa-chart-line w-5"></i>Rekap Penjualan</button>
             </div>
             <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800 bg-gray-950">
                 <div class="text-xs text-gray-500 mb-2 truncate"><i class="fas fa-user mr-1"></i><span id="adminUser"></span></div>
@@ -67,7 +68,10 @@
 
             <!-- DASHBOARD -->
             <div id="viewDashboard" class="view hidden">
-                <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold">Dashboard</h1>
+                    <button id="resetDataBtn" class="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-xl text-sm transition"><i class="fas fa-trash-alt mr-1"></i>Reset Semua Data</button>
+                </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-red-500" id="statMenu">0</div><div class="text-xs text-gray-400 mt-1">Menu Items</div></div>
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-blue-500" id="statOrders">0</div><div class="text-xs text-gray-400 mt-1">Total Pesanan</div></div>
@@ -78,7 +82,6 @@
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-purple-500" id="statTestimonials">0</div><div class="text-xs text-gray-400 mt-1">Testimoni</div></div>
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-pink-500" id="statGallery">0</div><div class="text-xs text-gray-400 mt-1">Galeri</div></div>
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-green-500" id="statWaNumbers">0</div><div class="text-xs text-gray-400 mt-1">WA Numbers</div></div>
-                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-indigo-500" id="statNewsletter">0</div><div class="text-xs text-gray-400 mt-1">Newsletter</div></div>
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-teal-500" id="statTables">0</div><div class="text-xs text-gray-400 mt-1">Total Meja</div></div>
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-3xl font-bold text-green-500" id="statAvailableTables">0</div><div class="text-xs text-gray-400 mt-1">Meja Tersedia</div></div>
                 </div>
@@ -130,6 +133,27 @@
             <div id="viewGallery" class="view hidden">
                 <div class="flex justify-between items-center mb-4"><h1 class="text-2xl font-bold">Galeri</h1><button id="addGalleryBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition"><i class="fas fa-plus mr-1"></i>Tambah</button></div>
                 <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="galleryTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">ID</th><th class="py-3 px-3 text-left">Gambar</th><th class="py-3 px-3 text-left">Alt</th><th class="py-3 px-3 text-left">Urutan</th><th class="py-3 px-3 text-right">Aksi</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <!-- SALES RECAP -->
+            <div id="viewSales" class="view hidden">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <h1 class="text-2xl font-bold">Rekap Penjualan</h1>
+                    <div class="flex items-center gap-2 text-sm">
+                        <label class="text-gray-400">Dari</label>
+                        <input id="salesDateFrom" type="date" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500">
+                        <label class="text-gray-400">Sampai</label>
+                        <input id="salesDateTo" type="date" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500">
+                        <button id="salesFilterBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition"><i class="fas fa-search mr-1"></i>Tampilkan</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="salesSummary">
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-xs text-gray-400">Total Pesanan</div><div class="text-2xl font-bold text-white" id="salesTotalOrders">0</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-xs text-gray-400">Total Pendapatan</div><div class="text-2xl font-bold text-green-400" id="salesTotalRevenue">Rp 0</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-xs text-gray-400">Rata-rata per Pesanan</div><div class="text-2xl font-bold text-blue-400" id="salesAvgOrder">Rp 0</div></div>
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700"><div class="text-xs text-gray-400">Pesanan Selesai</div><div class="text-2xl font-bold text-green-400" id="salesCompleted">0</div></div>
+                </div>
+                <div class="overflow-x-auto bg-gray-800 rounded-xl border border-gray-700"><table id="salesTable" class="w-full text-sm"><thead><tr class="bg-gray-900 text-gray-400 text-xs uppercase"><th class="py-3 px-3 text-left">Tanggal</th><th class="py-3 px-3 text-right">Pesanan</th><th class="py-3 px-3 text-right">Pendapatan</th><th class="py-3 px-3 text-right">Pending</th><th class="py-3 px-3 text-right">Confirmed</th><th class="py-3 px-3 text-right">Completed</th><th class="py-3 px-3 text-right">Cancelled</th></tr></thead><tbody></tbody></table></div>
             </div>
         </main>
     </div>
@@ -249,6 +273,17 @@
         </div>
     </div>
 
+    <!-- ORDER DETAIL MODAL -->
+    <div id="orderDetailModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-lg border border-gray-700 p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-lg font-bold" id="orderDetailTitle">Detail Pesanan</h2>
+                <button id="orderDetailClose" class="text-gray-400 hover:text-gray-300 text-2xl cursor-pointer leading-none">&times;</button>
+            </div>
+            <div id="orderDetailContent" class="space-y-3 text-sm"></div>
+        </div>
+    </div>
+
     <!-- DELETE CONFIRM MODAL -->
     <div id="deleteModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
         <div class="bg-gray-800 rounded-2xl w-full max-w-sm border border-gray-700 p-6 text-center">
@@ -258,6 +293,25 @@
             <div class="flex gap-2">
                 <button id="deleteConfirmBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition flex-1">Hapus</button>
                 <button id="deleteCancelBtn" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-xl text-sm transition">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESET CONFIRM MODAL -->
+    <div id="resetModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-sm border border-gray-700 p-6 text-center">
+            <div class="text-red-500 text-4xl mb-3"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 class="text-lg font-bold mb-2">Reset Semua Data?</h3>
+            <p class="text-sm text-gray-400 mb-2">Semua data berikut akan dikembalikan ke pengaturan awal:</p>
+            <ul class="text-xs text-gray-500 mb-4 text-left list-disc list-inside">
+                <li>Pesanan, reservasi, pesan masuk</li>
+                <li>Menu, galeri, testimoni, meja, nomor WA</li>
+                <li>Data newsletter &amp; pembayaran</li>
+            </ul>
+            <p class="text-xs text-red-400 mb-6">Akun admin tidak akan dihapus. Tindakan ini tidak dapat dibatalkan!</p>
+            <div class="flex gap-2">
+                <button id="resetConfirmBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition flex-1"><i class="fas fa-trash-alt mr-1"></i>Reset</button>
+                <button id="resetCancelBtn" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-xl text-sm transition">Batal</button>
             </div>
         </div>
     </div>

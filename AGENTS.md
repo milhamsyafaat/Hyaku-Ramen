@@ -1,73 +1,76 @@
-# Hyaku Ramen — Monorepo
+# Hyaku Ramen
 
-| Folder | Hosting | Tech |
-|--------|---------|------|
+| Folder | Deploy | Tech |
+|--------|--------|------|
 | `frontend/` | GitHub Pages | Vanilla HTML + Tailwind v3 CDN + FA6.4 + ES5 JS |
 | `backend/` | VPS (Procfile) | Node >=22 + Express + `node:sqlite` |
-| `admin/` | GitHub Pages (subdomain) | ES5 SPA, calls API via Cloudflare proxy |
+| `admin/` | GitHub Pages subdomain | ES5 SPA, calls API via Cloudflare proxy |
+
+## Quick start
 
 ```bash
 cd backend && npm install && npm start  # http://localhost:3001
-# npm run dev is identical to start
+# npm run dev is identical (same script)
 ```
 
-## ES5 frontend, no build
+Express serves `frontend/` and `admin/` statically in both dev & prod. The `isDev` branch at `backend/index.js:40-63` is a no-op — identical code in both branches.
 
-DOM helpers (`frontend/script.js:2-4`): `$('#id')`, `qs()`/`qa()`.  
-`esc()` (`script.js:7-10`) for XSS-safe HTML — use on all user-generated content.
+## Frontend — no build
 
-Load order (`frontend/index.html:699-701`): **images.js** → **data.js** → **script.js**.  
-`images.js` defines `IMG_*`, `GAL_*`, `WA_NUMBER` globals.  
-`data.js` defines `MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS` (API fallback).
+Tailwind v3 via CDN. Load order: `images.js` → `data.js` → `script.js`.  
+`images.js` provides `IMG_*`, `GAL_*`, `WA_NUMBER`, `WA_NUMBER_TESTER` globals.  
+`data.js` provides `MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS` (fallbacks when API is down).
+
+DOM helpers: `$('#id')`, `qs()`, `qa()` in `frontend/script.js:2-4`.  
+`esc()` (at `script.js:7-10` and `admin/app.js:5-8`) for XSS-safe HTML.
 
 ## Backend
 
-`index.js` serves API routes + static frontend/admin files in both dev and production (branches are identical at `index.js:42-65`).
+**DB** (`backend/db.js`): `node:sqlite` `DatabaseSync` (sync API). DB at `backend/data/hyaku.db`, auto-created + seeded on first start. Exports `getDb()`, `initialize()`, `validate()`, `sanitize()`, `resetData()`.
 
-Rate limiting (15-min windows): `/api/*` 100 req, `/api/auth/login` 5 req, form endpoints 10 req.
+**Rate limiting** (15-min windows): `/api/*` 100 req (admin routes excluded), `/api/auth/login` 5 req, `/api/{contact,reservations,orders}` 10 req.
 
-**DB** (`backend/db.js`): built-in `node:sqlite` `DatabaseSync` (Node 22+). Sync API — `db.prepare().get()`, `.run()`. DB at `backend/data/hyaku.db`, auto-created + seeded on first start. Exports `getDb()`, `initialize()`, `validate(schema, data)`, `sanitize(str)`. Seed data is module-scoped inside `db.js`.
+**Routes**: 13 files in `backend/routes/*.js` mounted at `backend/index.js:26-38`.
 
-**Image URLs are duplicated** in `backend/db.js` (same `IMG_*`/`GAL_*` vars). Update both files when changing images.
+**JWT** (`backend/middleware/auth.js`): requires `JWT_SECRET` env in production; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry.
 
-**Default admin**: `admin` / `Hyakuadmin` (created on first start, logged at `index.js:73`).  
-**JWT** (`backend/middleware/auth.js`): `JWT_SECRET` env required in production; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry.
+**Default admin**: `admin` / `admin123` (auto-seeded on first start, logged at startup).
 
-**`.env` template** (`backend/.env`, gitignored): `JWT_SECRET`, `MIDTRANS_*`, `MIDTRANS_IS_PRODUCTION`, `SMTP_*`, `ADMIN_EMAIL`. No `dotenv` package — set manually.
+**`.env`** (`backend/.env`, gitignored): `JWT_SECRET`, `MIDTRANS_*`, `MIDTRANS_IS_PRODUCTION`, `SMTP_*`, `ADMIN_EMAIL`. Template exists, but no `dotenv` loader — set vars in the runtime environment or shell.
 
-**Optional services**: Midtrans payments (`backend/services/midtrans.js`) and email via nodemailer (`backend/services/email.js`). Payment notif at `POST /api/payments/notification`.
+**Optional services**: Midtrans payments (`backend/services/midtrans.js`), nodemailer (`backend/services/email.js`). Notif endpoint: `POST /api/payments/notification`.
 
-**Unused deps**: `pg`, `http-proxy-middleware` in `package.json` — never imported.
+**Unused deps** (never imported): `pg`, `http-proxy-middleware`.
 
-## API & forms
+**Only scripts**: `start`/`dev` (both `node index.js`). No lint/test/typecheck.
 
-Endpoints: `backend/routes/*.js` (13 files). Frontend render functions fetch from API, fall back to `MENU_DATA`/`GALLERY_DATA`/`TESTIMONIALS` globals.  
-Forms POST to `/api/*` (fire-and-forget, `.catch(function() {})`) **and** open WhatsApp.
+## Gotchas
+
+- **Image URLs duplicated** in `frontend/images.js` and `backend/db.js` (same `IMG_*`/`GAL_*` vars). Update both.
+- **`GAL_2` and `GAL_3` in `images.js` share the same URL** — likely a copy-paste bug.
+- **Phone `6285174074352` hardcoded** in `href="tel:"` at `frontend/index.html:222,276` — update when changing WA number.
+- **Forms POST to `/api/*`** AND open WhatsApp via `openWaSelection()`. Some fetches (e.g. `/api/wa-numbers/active`, `/api/config`) are fire-and-forget (`.catch(function() {})`).
+- **Root `package-lock.json` is stale** — `backend/package.json` is the real manifest.
+- `admin/app.js` has its own copy of `esc()` (same implementation as frontend).
+- **Midtrans Snap URL hardcoded to sandbox** in `frontend/script.js:729`; `MIDTRANS_IS_PRODUCTION` only affects server-side (`backend/services/midtrans.js:6`).
+- **`TODO.md` is stale** — claims admin password was changed to `Hyakuadmin`, but code still seeds `admin123` (`backend/db.js:60`).
 
 ## WhatsApp numbers
 
-Two defaults: `6285174074352` (Official) + `088293426204` (Tester).  
-Source of truth: `wa_numbers` table in SQLite (CRUD via Admin → WhatsApp tab).  
-Frontend: `/api/config` endpoint serves active numbers; fallback = `WA_NUMBER`/`WA_NUMBER_TESTER` from `images.js`.  
-All WA links route through `openWaSelection()` modal in `script.js`.
+Source of truth: `wa_numbers` table (CRUD via Admin → WhatsApp tab). Frontend fetches from `/api/config`; fallback = `WA_NUMBER`/`WA_NUMBER_TESTER` from `images.js`. All WA links use `openWaSelection()` modal in `script.js:47`.
 
-## localStorage keys
+## Data
 
-`cart`, `admin_token` (JWT), `admin_user`, `theme` (dark mode), `saved` (bookmark), `newsletter_email`.
+**Menu** cats: `ramen`/`dry`/`katsu`/`minuman`/`topping`. Fields: `id`, `cat`, `name`, `price` (display), `priceNum` (numeric), `badge`, `badgeClass`, `desc`, `img`.
 
-## Data structures
+**Tables**: 10 (Meja 1-10), capacity 2/4/6, location Indoor/Outdoor.
 
-**Menu** items (`frontend/data.js:2-17`, also `backend/db.js:117-132`): cats `ramen`/`dry`/`katsu`/`minuman`/`topping`. Fields: `id`, `cat`, `name`, `price` (display), `priceNum` (numeric for cart), `badge`, `badgeClass`, `desc`, `img`.  
-**Tables**: 10 tables, `number` (Meja 1-10), `capacity` (2/4/6), `location` (Indoor/Outdoor).
+**localStorage keys**: `cart`, `admin_token` (JWT), `admin_user`, `theme` (dark mode), `saved` (bookmark), `newsletter_email`.
 
-## CI/CD
+## Deploy
 
-`.github/workflows/deploy.yml`: push to `main` → upload `frontend/` to GitHub Pages. Backend/admin not included.
+**Procfile** (root): `cd backend && npm install && node index.js` — npm install runs at deploy time.
 
-## Admin SPA
+**Docker** (`backend/Dockerfile`): Node 22 Alpine, serves all 3 folders. Build with `docker build -f backend/Dockerfile .`
 
-`admin/index.html` + `admin/app.js` + `admin/style.css`. Auth via `localStorage.admin_token` JWT.
-
-## No test/lint/typecheck suite
-
-`package.json` has only `start`/`dev` (both `node index.js`). No test framework, linter, or type checker.
+**CI** (`.github/workflows/deploy.yml`): push to `main` → uploads only `frontend/` to GitHub Pages.

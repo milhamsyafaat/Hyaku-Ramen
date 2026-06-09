@@ -18,12 +18,12 @@ var MENU_DATA = [
 
 /* ===== GALLERY DATA ===== */
 var GALLERY_DATA = [
-    { src: GAL_1, alt: 'Ramen di meja restoran' },
-    { src: GAL_2, alt: 'Suasana dalam restoran ramen' },
-    { src: GAL_3, alt: 'Piring ramen dengan topping' },
-    { src: GAL_4, alt: 'Interior restoran' },
-    { src: GAL_5, alt: 'Semangkuk ramen lezat' },
-    { src: GAL_6, alt: 'Chicken katsu goreng' }
+    { src: GAL_1, alt: 'Ramen dengan telur dan nori' },
+    { src: GAL_2, alt: 'Semangkuk ramen lezat' },
+    { src: GAL_3, alt: 'Semangkuk ramen lezat' },
+    { src: GAL_4, alt: 'Ramen dengan kuah dan topping' },
+    { src: GAL_5, alt: 'Ramen dengan chashu dan telur' },
+    { src: GAL_6, alt: 'Mie ramen dengan kuah kental' }
 ];
 
 /* ===== TESTIMONIALS ===== */

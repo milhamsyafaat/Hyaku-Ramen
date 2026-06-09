@@ -52,12 +52,12 @@ function initialize() {
     var waCount = db.prepare('SELECT COUNT(*) as c FROM wa_numbers').get();
     if (waCount.c === 0) {
         db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('6285174074352', 'Hyaku Ramen Official', 1, 0, 1);
-        db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('088293426204', 'Hyaku Ramen Tester', 0, 1, 1);
+        db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('6288293426204', 'Hyaku Ramen Tester', 0, 1, 1);
     }
 
     var adminCount = db.prepare('SELECT COUNT(*) as c FROM admin_users').get();
     if (adminCount.c === 0) {
-        var hash = bcrypt.hashSync('Hyakuadmin', 10);
+        var hash = bcrypt.hashSync('admin123', 10);
         db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run('admin', hash);
 
     }
@@ -107,12 +107,12 @@ var IMG_AIR = 'https://images.unsplash.com/photo-1523362628745-0c100150b504?auto
 var IMG_EXTRA_CHASHU = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80';
 var IMG_SOFT_EGG = 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=400&q=80';
 var IMG_NORI = 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?auto=format&fit=crop&w=400&q=80';
-var GAL_1 = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80';
-var GAL_2 = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
-var GAL_3 = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80';
-var GAL_4 = 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=600&q=80';
-var GAL_5 = 'https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=600&q=80';
-var GAL_6 = 'https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?auto=format&fit=crop&w=600&q=80';
+var GAL_1 = 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?q=80&w=1170&auto=format&fit=crop';
+var GAL_2 = 'https://images.unsplash.com/photo-1721032740303-faa3480ec606?w=500&auto=format&fit=crop&q=60';
+var GAL_3 = 'https://images.unsplash.com/photo-1721032740303-faa3480ec606?w=500&auto=format&fit=crop&q=60';
+var GAL_4 = 'https://images.unsplash.com/photo-1614563637806-1d0e645e0940?w=500&auto=format&fit=crop&q=60';
+var GAL_5 = 'https://images.unsplash.com/photo-1618889482923-38250401a84e?w=500&auto=format&fit=crop&q=60';
+var GAL_6 = 'https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=500&auto=format&fit=crop&q=60';
 
 var menuData = [
     { id: 'm1', cat: 'ramen', name: 'Hyaku Legendary Ramen', price: 'Rp 28.000', priceNum: 28000, badge: 'Best Seller', badgeClass: 'text-red-500', desc: 'Ramen signature dengan rich tonkotsu broth, chashu, soft-boiled egg, nori, dan green onions.', img: IMG_LEGENDARY },
@@ -132,12 +132,12 @@ var menuData = [
 ];
 
 var galleryData = [
-    { src: GAL_1, alt: 'Ramen di meja restoran' },
-    { src: GAL_2, alt: 'Suasana dalam restoran ramen' },
-    { src: GAL_3, alt: 'Piring ramen dengan topping' },
-    { src: GAL_4, alt: 'Interior restoran' },
-    { src: GAL_5, alt: 'Semangkuk ramen lezat' },
-    { src: GAL_6, alt: 'Chicken katsu goreng' }
+    { src: GAL_1, alt: 'Ramen dengan telur dan nori' },
+    { src: GAL_2, alt: 'Semangkuk ramen lezat' },
+    { src: GAL_3, alt: 'Semangkuk ramen lezat' },
+    { src: GAL_4, alt: 'Ramen dengan kuah dan topping' },
+    { src: GAL_5, alt: 'Ramen dengan chashu dan telur' },
+    { src: GAL_6, alt: 'Mie ramen dengan kuah kental' }
 ];
 
 var testimonialData = [
@@ -172,4 +172,13 @@ function sanitize(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
 }
 
-module.exports = { getDb, initialize, validate, sanitize };
+function resetData() {
+    var db = getDb();
+    var tables = ['orders', 'reservations', 'contact_messages', 'testimonials', 'gallery', 'newsletter_subscribers', 'menu_items', 'tables', 'wa_numbers', 'payments', 'email_logs'];
+    tables.forEach(function (t) { db.exec('DELETE FROM ' + t); });
+    seed(db);
+    db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('6285174074352', 'Hyaku Ramen Official', 1, 0, 1);
+    db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('6288293426204', 'Hyaku Ramen Tester', 0, 1, 1);
+}
+
+module.exports = { getDb, initialize, validate, sanitize, resetData };

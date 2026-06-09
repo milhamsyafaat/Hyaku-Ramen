@@ -14,7 +14,7 @@ app.use(express.json({ limit: '1mb' }));
 
 var isDev = process.env.NODE_ENV !== 'production';
 
-var limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests, try again later' } });
+var limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests, try again later' }, skip: function (req) { return req.path.startsWith('/api/admin'); } });
 app.use('/api/', limiter);
 
 var authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: { error: 'Too many login attempts, try again later' } });
@@ -70,6 +70,6 @@ app.listen(PORT, function () {
     console.log('Hyaku Ramen API server running on http://localhost:' + PORT);
     console.log('Website: http://localhost:' + PORT);
     console.log('Admin: http://localhost:' + PORT + '/admin/');
-    console.log('Default login: admin / Hyakuadmin');
+    console.log('Default login: admin / admin123');
 
 });

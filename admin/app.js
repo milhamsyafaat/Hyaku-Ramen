@@ -92,7 +92,6 @@ function loadDashboard() {
         document.getElementById('statMessages').textContent = d.unreadMessages;
         document.getElementById('statTestimonials').textContent = d.testimonialCount;
         document.getElementById('statGallery').textContent = d.galleryCount;
-        if (document.getElementById('statNewsletter')) document.getElementById('statNewsletter').textContent = d.newsletterCount || 0;
         if (document.getElementById('statTables')) document.getElementById('statTables').textContent = d.tableCount || 0;
         if (document.getElementById('statAvailableTables')) document.getElementById('statAvailableTables').textContent = d.availableTables || 0;
         if (document.getElementById('statWaNumbers')) document.getElementById('statWaNumbers').textContent = d.waNumberCount || 0;
@@ -149,12 +148,25 @@ function startDashboardPoll() {
     });
 })();
 
+var __visibilityAttached = false;
+
 function showApp() {
     document.getElementById('sidebarNav').classList.remove('hidden');
     document.getElementById('adminUser').textContent = localStorage.getItem('admin_user');
     showView('viewDashboard');
     loadDashboard();
     startDashboardPoll();
+    if (!__visibilityAttached) {
+        __visibilityAttached = true;
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                if (dashboardInterval) { clearInterval(dashboardInterval); dashboardInterval = null; }
+            } else {
+                loadDashboard();
+                startDashboardPoll();
+            }
+        });
+    }
 }
 
 /* ===== MENU ===== */
@@ -261,7 +273,7 @@ function loadOrders() {
             var pmtHtml = pmtStatus ? '<span class="' + esc(pmtBadge[pmtStatus] || 'bg-gray-600') + ' text-white text-xs px-2 py-0.5 rounded">' + esc(pmtStatus) + '</span>' : '<span class="text-gray-500 text-xs">-</span>';
             var tr = document.createElement('tr');
             tr.className = 'border-b border-gray-700 hover:bg-gray-700/50';
-            tr.innerHTML = '<td class="py-2 px-3 text-xs">#' + esc(o.id) + '</td><td class="py-2 px-3 text-xs max-w-[200px] truncate">' + esc(itemsStr) + '</td><td class="py-2 px-3 text-sm">Rp ' + (o.total || 0).toLocaleString('id-ID') + '</td><td class="py-2 px-3 text-xs text-gray-400">' + esc(o.customer_name || '-') + '<br>' + esc(o.customer_phone || '') + '</td><td class="py-2 px-3">' + pmtHtml + '</td><td class="py-2 px-3"><span class="' + esc(statusBadge[o.status] || 'bg-gray-600') + ' text-white text-xs px-2 py-0.5 rounded">' + esc(o.status) + '</span></td><td class="py-2 px-3 text-xs text-gray-400">' + esc(o.created_at) + '</td><td class="py-2 px-3"><select class="bg-gray-700 text-white text-xs rounded px-1 py-0.5 border border-gray-600" onchange="updateOrderStatus(' + esc(o.id) + ', this.value)"><option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option><option value="confirmed" ' + (o.status === 'confirmed' ? 'selected' : '') + '>Confirmed</option><option value="completed" ' + (o.status === 'completed' ? 'selected' : '') + '>Completed</option><option value="cancelled" ' + (o.status === 'cancelled' ? 'selected' : '') + '>Cancelled</option></select></td>';
+            tr.innerHTML = '<td class="py-2 px-3 text-xs">#' + esc(o.id) + '</td><td class="py-2 px-3 text-xs max-w-[200px] truncate">' + esc(itemsStr) + '</td><td class="py-2 px-3 text-sm">Rp ' + (o.total || 0).toLocaleString('id-ID') + '</td><td class="py-2 px-3 text-xs text-gray-400">' + esc(o.customer_name || '-') + '<br>' + esc(o.customer_phone || '') + '</td><td class="py-2 px-3">' + pmtHtml + '</td><td class="py-2 px-3"><span class="' + esc(statusBadge[o.status] || 'bg-gray-600') + ' text-white text-xs px-2 py-0.5 rounded">' + esc(o.status) + '</span></td><td class="py-2 px-3 text-xs text-gray-400">' + esc(o.created_at) + '</td><td class="py-2 px-3"><div class="flex items-center gap-1"><button class="text-blue-400 hover:text-blue-300 text-xs" onclick="viewOrder(' + esc(o.id) + ')" title="Detail"><i class="fas fa-eye"></i></button><select class="bg-gray-700 text-white text-xs rounded px-1 py-0.5 border border-gray-600" onchange="updateOrderStatus(' + esc(o.id) + ', this.value)"><option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option><option value="confirmed" ' + (o.status === 'confirmed' ? 'selected' : '') + '>Confirmed</option><option value="completed" ' + (o.status === 'completed' ? 'selected' : '') + '>Completed</option><option value="cancelled" ' + (o.status === 'cancelled' ? 'selected' : '') + '>Cancelled</option></select></div></td>';
             tbody.appendChild(tr);
         });
     });
@@ -269,6 +281,43 @@ function loadOrders() {
 
 function updateOrderStatus(id, status) {
     api('/orders/' + id, { method: 'PUT', body: JSON.stringify({ status: status }) }).then(function () { adminToast('Status pesanan diupdate', 'success'); }).catch(function () { adminToast('Gagal update status', 'error'); });
+}
+
+function viewOrder(id) {
+    var modal = document.getElementById('orderDetailModal');
+    var content = document.getElementById('orderDetailContent');
+    document.getElementById('orderDetailTitle').textContent = 'Detail Pesanan #' + id;
+    content.innerHTML = '<div class="text-center py-8 text-gray-500"><i class="fas fa-spinner fa-spin text-xl"></i><p class="text-xs mt-2">Memuat...</p></div>';
+    modal.classList.remove('hidden');
+    api('/orders/' + id).then(function (o) {
+        if (!o || o.error) { content.innerHTML = '<div class="text-red-400">Gagal memuat detail pesanan</div>'; return; }
+        var items = [];
+        try { items = JSON.parse(o.items || '[]'); } catch (e) {}
+        var itemsHtml = items.length ? items.map(function (i) { return '<div class="flex justify-between py-1"><span>' + esc(i.name) + ' x' + esc(i.qty) + '</span><span class="text-gray-400">' + esc(i.price) + '</span></div>'; }).join('') : '<div class="text-gray-500">-</div>';
+        var statusColors = { pending: 'text-yellow-400', confirmed: 'text-blue-400', completed: 'text-green-400', cancelled: 'text-red-400' };
+        content.innerHTML = '<div class="grid grid-cols-2 gap-3 border-b border-gray-700 pb-3"><div><span class="text-gray-400 text-xs">Pelanggan</span><p class="font-medium">' + esc(o.customer_name || '-') + '</p></div><div><span class="text-gray-400 text-xs">No. HP</span><p class="font-medium">' + esc(o.customer_phone || '-') + '</p></div><div><span class="text-gray-400 text-xs">Email</span><p class="font-medium">' + esc(o.email || '-') + '</p></div><div><span class="text-gray-400 text-xs">Status</span><p class="font-medium ' + esc(statusColors[o.status] || 'text-gray-400') + '">' + esc(o.status) + '</p></div></div><div class="border-b border-gray-700 py-3"><span class="text-gray-400 text-xs block mb-2">Pesanan</span>' + itemsHtml + '<div class="flex justify-between pt-2 mt-2 border-t border-gray-700 font-bold"><span>Total</span><span class="text-green-400">Rp ' + (o.total || 0).toLocaleString('id-ID') + '</span></div></div><div class="grid grid-cols-2 gap-3 pt-3"><div><span class="text-gray-400 text-xs">Pembayaran</span><p class="font-medium">' + esc(o.payment_type || '-') + '</p></div><div><span class="text-gray-400 text-xs">Status Payment</span><p class="font-medium">' + esc(o.payment_status || '-') + '</p></div><div><span class="text-gray-400 text-xs">Transaction ID</span><p class="font-medium text-xs truncate">' + esc(o.transaction_id || '-') + '</p></div><div><span class="text-gray-400 text-xs">Tanggal</span><p class="font-medium text-xs">' + esc(o.created_at || '-') + '</p></div></div><div class="mt-4 pt-3 border-t border-gray-700 flex justify-end"><button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm transition" onclick="deleteOrder(' + esc(o.id) + ')"><i class="fas fa-trash mr-1"></i>Hapus Pesanan</button></div>';
+    }).catch(function () {
+        content.innerHTML = '<div class="text-red-400">Gagal memuat detail pesanan</div>';
+    });
+}
+
+document.getElementById('orderDetailClose').addEventListener('click', function () {
+    document.getElementById('orderDetailModal').classList.add('hidden');
+});
+document.getElementById('orderDetailModal').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.add('hidden');
+});
+
+function deleteOrder(id) {
+    confirmDelete('Hapus pesanan #' + id + '?', function () {
+        api('/orders/' + id, { method: 'DELETE' }).then(function () {
+            document.getElementById('orderDetailModal').classList.add('hidden');
+            loadOrders();
+            adminToast('Pesanan berhasil dihapus', 'success');
+        }).catch(function () {
+            adminToast('Gagal menghapus pesanan', 'error');
+        });
+    });
 }
 
 /* ===== RESERVATIONS ===== */
@@ -670,6 +719,74 @@ document.getElementById('waFormCancel').addEventListener('click', function () {
     document.getElementById('waFormModal').classList.add('hidden');
 });
 
+/* ===== SALES RECAP ===== */
+function loadSales() {
+    var from = document.getElementById('salesDateFrom').value;
+    var to = document.getElementById('salesDateTo').value;
+    var params = '?' + (from ? 'from=' + from : '') + (from && to ? '&' : '') + (to ? 'to=' + to : '');
+    showLoading('#salesTable tbody');
+    api('/admin/sales-recap' + params).then(function (d) {
+        var data = d.data || d;
+        if (!Array.isArray(data)) data = [];
+        var totalOrders = 0, totalRevenue = 0, totalCompleted = 0;
+        var tbody = document.querySelector('#salesTable tbody');
+        tbody.innerHTML = '';
+        data.forEach(function (r) {
+            totalOrders += r.order_count || 0;
+            totalRevenue += r.revenue || 0;
+            if (r.status === 'completed') totalCompleted += r.order_count || 0;
+            var tr = document.createElement('tr');
+            tr.className = 'border-b border-gray-700 hover:bg-gray-700/50';
+            tr.innerHTML = '<td class="py-2 px-3 text-sm">' + esc(r.date) + '</td><td class="py-2 px-3 text-right text-sm font-medium">' + (r.order_count || 0) + '</td><td class="py-2 px-3 text-right text-sm text-green-400">Rp ' + (r.revenue || 0).toLocaleString('id-ID') + '</td><td class="py-2 px-3 text-right text-xs text-yellow-400">' + (r.pending || 0) + '</td><td class="py-2 px-3 text-right text-xs text-blue-400">' + (r.confirmed || 0) + '</td><td class="py-2 px-3 text-right text-xs text-green-400">' + (r.completed || 0) + '</td><td class="py-2 px-3 text-right text-xs text-red-400">' + (r.cancelled || 0) + '</td>';
+            tbody.appendChild(tr);
+        });
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">Tidak ada data untuk periode ini</td></tr>';
+        }
+        document.getElementById('salesTotalOrders').textContent = totalOrders;
+        document.getElementById('salesTotalRevenue').textContent = 'Rp ' + totalRevenue.toLocaleString('id-ID');
+        document.getElementById('salesAvgOrder').textContent = totalOrders ? 'Rp ' + Math.round(totalRevenue / totalOrders).toLocaleString('id-ID') : 'Rp 0';
+        document.getElementById('salesCompleted').textContent = totalCompleted;
+    }).catch(function () {
+        document.querySelector('#salesTable tbody').innerHTML = '<tr><td colspan="7" class="py-8 text-center text-red-400">Gagal memuat data</td></tr>';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var today = new Date();
+    var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    document.getElementById('salesDateFrom').value = firstDay.toISOString().split('T')[0];
+    document.getElementById('salesDateTo').value = today.toISOString().split('T')[0];
+});
+document.getElementById('salesFilterBtn').addEventListener('click', loadSales);
+
+/* ===== RESET DATA ===== */
+document.getElementById('resetDataBtn').addEventListener('click', function () {
+    document.getElementById('resetModal').classList.remove('hidden');
+});
+
+document.getElementById('resetCancelBtn').addEventListener('click', function () {
+    document.getElementById('resetModal').classList.add('hidden');
+});
+
+document.getElementById('resetConfirmBtn').addEventListener('click', function () {
+    document.getElementById('resetModal').classList.add('hidden');
+    var btn = this;
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Mereset...';
+    api('/admin/reset', { method: 'POST' }).then(function () {
+        loadDashboard();
+        adminToast('Semua data berhasil direset ke pengaturan awal', 'success');
+    }).catch(function () {
+        adminToast('Gagal mereset data', 'error');
+    }).finally(function () {
+        btn.disabled = false; btn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i>Reset';
+    });
+});
+
+document.getElementById('resetModal').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.add('hidden');
+});
+
 /* ===== NAVIGATION ===== */
 document.querySelectorAll('.nav-item').forEach(function (el) {
     el.addEventListener('click', function () {
@@ -684,6 +801,7 @@ document.querySelectorAll('.nav-item').forEach(function (el) {
         if (view === 'viewGallery') loadGallery();
         if (view === 'viewTables') loadTables();
         if (view === 'viewWaNumbers') loadWaNumbers();
+        if (view === 'viewSales') loadSales();
     });
 });
 
@@ -697,6 +815,8 @@ document.addEventListener('keydown', function (e) {
         document.getElementById('waFormModal').classList.add('hidden');
         document.getElementById('tableFormModal').classList.add('hidden');
         document.getElementById('tableAssignModal').classList.add('hidden');
+        document.getElementById('orderDetailModal').classList.add('hidden');
+        document.getElementById('resetModal').classList.add('hidden');
         deleteCallback = null;
     }
 });
