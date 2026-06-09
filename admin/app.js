@@ -729,46 +729,26 @@ function loadSales() {
         var data = d.data || d;
         if (!Array.isArray(data)) data = [];
         var totalOrders = 0, totalRevenue = 0, totalCompleted = 0;
-        var sumPendingRev = 0, sumConfirmedRev = 0, sumCompletedRev = 0, sumCancelledRev = 0;
         var tbody = document.querySelector('#salesTable tbody');
         tbody.innerHTML = '';
         data.forEach(function (r) {
             totalOrders += r.order_count || 0;
             totalRevenue += r.revenue || 0;
             totalCompleted += r.completed || 0;
-            sumPendingRev += r.pending_revenue || 0;
-            sumConfirmedRev += r.confirmed_revenue || 0;
-            sumCompletedRev += r.completed_revenue || 0;
-            sumCancelledRev += r.cancelled_revenue || 0;
             var tr = document.createElement('tr');
             tr.className = 'border-b border-gray-700 hover:bg-gray-700/50';
-            tr.innerHTML = '<td class="py-2 px-3 text-sm">' + esc(r.date)
-                + '</td><td class="py-2 px-3 text-right text-sm font-medium">' + (r.order_count || 0)
-                + '</td><td class="py-2 px-3 text-right text-sm text-green-400">Rp ' + (r.revenue || 0).toLocaleString('id-ID')
-                + '</td><td class="py-2 px-3 text-right text-xs text-yellow-400">' + (r.pending || 0)
-                + '</td><td class="py-2 px-3 text-right text-xs text-yellow-400">Rp ' + (r.pending_revenue || 0).toLocaleString('id-ID')
-                + '</td><td class="py-2 px-3 text-right text-xs text-blue-400">' + (r.confirmed || 0)
-                + '</td><td class="py-2 px-3 text-right text-xs text-blue-400">Rp ' + (r.confirmed_revenue || 0).toLocaleString('id-ID')
-                + '</td><td class="py-2 px-3 text-right text-xs text-green-400">' + (r.completed || 0)
-                + '</td><td class="py-2 px-3 text-right text-xs text-green-400">Rp ' + (r.completed_revenue || 0).toLocaleString('id-ID')
-                + '</td><td class="py-2 px-3 text-right text-xs text-red-400">' + (r.cancelled || 0)
-                + '</td><td class="py-2 px-3 text-right text-xs text-red-400">Rp ' + (r.cancelled_revenue || 0).toLocaleString('id-ID')
-                + '</td>';
+            tr.innerHTML = '<td class="py-2 px-3 text-sm">' + esc(r.date) + '</td><td class="py-2 px-3 text-right text-sm font-medium">' + (r.order_count || 0) + '</td><td class="py-2 px-3 text-right text-sm text-green-400">Rp ' + (r.revenue || 0).toLocaleString('id-ID') + '</td><td class="py-2 px-3 text-right text-xs text-yellow-400">' + (r.pending || 0) + '</td><td class="py-2 px-3 text-right text-xs text-blue-400">' + (r.confirmed || 0) + '</td><td class="py-2 px-3 text-right text-xs text-green-400">' + (r.completed || 0) + '</td><td class="py-2 px-3 text-right text-xs text-red-400">' + (r.cancelled || 0) + '</td>';
             tbody.appendChild(tr);
         });
         if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" class="py-8 text-center text-gray-500">Tidak ada data untuk periode ini</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">Tidak ada data untuk periode ini</td></tr>';
         }
         document.getElementById('salesTotalOrders').textContent = totalOrders;
         document.getElementById('salesTotalRevenue').textContent = 'Rp ' + totalRevenue.toLocaleString('id-ID');
         document.getElementById('salesAvgOrder').textContent = totalOrders ? 'Rp ' + Math.round(totalRevenue / totalOrders).toLocaleString('id-ID') : 'Rp 0';
         document.getElementById('salesCompleted').textContent = totalCompleted;
-        document.getElementById('salesPendingRevenue').textContent = 'Rp ' + sumPendingRev.toLocaleString('id-ID');
-        document.getElementById('salesConfirmedRevenue').textContent = 'Rp ' + sumConfirmedRev.toLocaleString('id-ID');
-        document.getElementById('salesCompletedRevenue').textContent = 'Rp ' + sumCompletedRev.toLocaleString('id-ID');
-        document.getElementById('salesCancelledRevenue').textContent = 'Rp ' + sumCancelledRev.toLocaleString('id-ID');
     }).catch(function () {
-        document.querySelector('#salesTable tbody').innerHTML = '<tr><td colspan="11" class="py-8 text-center text-red-400">Gagal memuat data</td></tr>';
+        document.querySelector('#salesTable tbody').innerHTML = '<tr><td colspan="7" class="py-8 text-center text-red-400">Gagal memuat data</td></tr>';
     });
 }
 
