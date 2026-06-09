@@ -568,24 +568,7 @@ var __galleryData = [];
     });
 })();
 
-/* ===== SAVE / BOOKMARK ===== */
-(function saveBtn() {
-    var btn = $('saveBtn');
-    var icon = $('saveIcon');
-    if (!btn || !icon) return;
-    var saved = localStorage.getItem('saved') === 'true';
-    function updateSave() {
-        icon.className = saved ? 'fas fa-bookmark text-red-600 text-xl mb-1' : 'far fa-bookmark text-red-600 text-xl mb-1';
-        btn.querySelector('span').textContent = saved ? 'Tersimpan' : 'Simpan';
-    }
-    updateSave();
-    btn.addEventListener('click', function () {
-        saved = !saved;
-        localStorage.setItem('saved', saved ? 'true' : 'false');
-        updateSave();
-        showToast(saved ? 'Tersimpan!' : 'Dihapus dari simpanan', saved ? 'success' : 'info');
-    });
-})();
+
 
 /* ===== SHARE ===== */
 (function shareBtn() {
@@ -694,30 +677,6 @@ function apiPost(url, data) {
     });
 })();
 
-/* ===== NEWSLETTER ===== */
-(function newsletter() {
-    var form = $('newsletterForm');
-    if (!form) return;
-    var input = $('newsletterEmail');
-    if (!input) return;
-
-    var saved = localStorage.getItem('newsletter_email');
-    if (saved) input.placeholder = 'Email: ' + saved;
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var email = input.value.trim();
-        if (!email) return;
-        try { localStorage.setItem('newsletter_email', email); } catch (e) {}
-        apiPost('/api/newsletter', { email: email }).then(function () {
-            showToast('Terima kasih! ' + email + ' telah terdaftar.', 'success');
-            form.reset();
-        }).catch(function (err) {
-            showToast('Gagal daftar newsletter: ' + (err.message || 'coba lagi'), 'error');
-        });
-    });
-})();
-
 /* ===== MIDTRANS SNAP LOADER ===== */
 var __snapLoaded = false;
 var __snapClientKey = null;
@@ -740,6 +699,9 @@ function loadSnap(clientKey) {
 
 /* ===== RECEIPT MODAL ===== */
 var __pendingWaText = '';
+var __directItems = null;
+var __directTotal = 0;
+
 function openReceipt(orderId, name, phone, items, total) {
     var modal = $('receiptModal');
     if (!modal) return;
@@ -753,6 +715,21 @@ function openReceipt(orderId, name, phone, items, total) {
     $('receiptName').textContent = name || '-';
     $('receiptPhone').textContent = phone || '-';
     $('receiptTotal').textContent = 'Rp ' + (total || 0).toLocaleString('id-ID');
+    var displayInfo = $('receiptDisplayInfo');
+    var inputInfo = $('receiptInputInfo');
+    if (orderId) {
+        if (displayInfo) displayInfo.classList.remove('hidden');
+        if (inputInfo) inputInfo.classList.add('hidden');
+        __directItems = null;
+        __directTotal = 0;
+    } else {
+        if (displayInfo) displayInfo.classList.add('hidden');
+        if (inputInfo) inputInfo.classList.remove('hidden');
+        __directItems = items;
+        __directTotal = total || 0;
+        if ($('receiptNameInput')) $('receiptNameInput').value = name || '';
+        if ($('receiptPhoneInput')) $('receiptPhoneInput').value = phone || '';
+    }
     var html = '';
     if (Array.isArray(items)) {
         for (var i = 0; i < items.length; i++) {
@@ -772,12 +749,42 @@ function openReceipt(orderId, name, phone, items, total) {
     function close() {
         modal.classList.remove('open');
         document.body.style.overflow = '';
+        __directItems = null;
+        __directTotal = 0;
     }
     $('receiptCloseBtn').addEventListener('click', close);
     $('receiptCloseBtn2').addEventListener('click', close);
     $('receiptWaBtn').addEventListener('click', function () {
-        close();
-        if (__pendingWaText) openWaSelection(__pendingWaText);
+        if (__directItems) {
+            var name = ($('receiptNameInput') || {}).value || '';
+            var phone = ($('receiptPhoneInput') || {}).value || '';
+            if (!name || !phone) {
+                showToast('Mohon isi nama dan nomor HP Anda.', 'warning');
+                return;
+            }
+            var items = Array.isArray(__directItems) ? __directItems : [{ id: __directItems.id, name: __directItems.name, qty: 1, price: __directItems.price, priceNum: __directItems.priceNum }];
+            var total = __directTotal;
+            var waText = 'Halo Hyaku Ramen, saya ingin pesan:\n';
+            for (var j = 0; j < items.length; j++) {
+                waText += '- ' + items[j].name + ' x' + items[j].qty + ' (' + items[j].price + ')\n';
+            }
+            waText += '\nTotal: Rp ' + total.toLocaleString('id-ID');
+            waText += '\nNama: ' + name;
+            waText += '\nNo. HP: ' + phone;
+            var btn = $('receiptWaBtn');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...'; }
+            apiPost('/api/orders', { items: items, total: total, customer_name: name, customer_phone: phone, email: '' }).then(function () {
+                close();
+                openWaSelection(waText);
+            }).catch(function (err) {
+                showToast('Gagal memproses pesanan: ' + (err.message || 'coba lagi'), 'error');
+            }).finally(function () {
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fab fa-whatsapp"></i> Konfirmasi via WhatsApp'; }
+            });
+        } else {
+            close();
+            if (__pendingWaText) openWaSelection(__pendingWaText);
+        }
     });
     modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
 })();

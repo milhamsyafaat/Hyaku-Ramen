@@ -43,15 +43,16 @@ router.get('/sales-recap', authMiddleware, function (req, res) {
         var from = req.query.from || '';
         var to = req.query.to || '';
         var where = "WHERE o.status IS NOT NULL";
-        if (from) where += " AND date(o.created_at) >= date(?)";
-        if (to) where += " AND date(o.created_at) <= date(?)";
         var params = [];
-        if (from) params.push(from);
-        if (to) params.push(to);
-        var sql = "SELECT date(o.created_at) as date, COUNT(*) as order_count, SUM(CASE WHEN o.status IN ('confirmed','completed') THEN o.total ELSE 0 END) as revenue, SUM(CASE WHEN o.status = 'pending' THEN 1 ELSE 0 END) as pending, SUM(CASE WHEN o.status = 'confirmed' THEN 1 ELSE 0 END) as confirmed, SUM(CASE WHEN o.status = 'completed' THEN 1 ELSE 0 END) as completed, SUM(CASE WHEN o.status = 'cancelled' THEN 1 ELSE 0 END) as cancelled FROM orders o " + where + " GROUP BY date(o.created_at) ORDER BY date(o.created_at) DESC";
-        var stmt = db.prepare(sql);
-        var rows = stmt.all.apply(stmt, params);
-        res.json({ data: rows || [] });
+        if (from) { where += " AND date(o.created_at) >= date(?)"; params.push(from); }
+        if (to) { where += " AND date(o.created_at) <= date(?)"; params.push(to); }
+        var orderSql = "SELECT o.* FROM orders o " + where + " ORDER BY o.created_at DESC";
+        var orderStmt = db.prepare(orderSql);
+        var orders = params.length ? orderStmt.all.apply(orderStmt, params) : orderStmt.all();
+        var statsSql = "SELECT COUNT(*) as total_orders, SUM(CASE WHEN o.status IN ('confirmed','completed') THEN o.total ELSE 0 END) as total_revenue, SUM(CASE WHEN o.status = 'completed' THEN 1 ELSE 0 END) as total_completed FROM orders o " + where;
+        var statsStmt = db.prepare(statsSql);
+        var stats = params.length ? statsStmt.get.apply(statsStmt, params) : statsStmt.get();
+        res.json({ orders: orders || [], stats: { totalOrders: stats.total_orders || 0, totalRevenue: stats.total_revenue || 0, totalCompleted: stats.total_completed || 0 } });
     } catch (e) {
         console.error('GET /api/admin/sales-recap error:', e);
         res.status(500).json({ error: 'Internal server error' });

@@ -27,7 +27,6 @@ function initialize() {
     db.exec('CREATE TABLE IF NOT EXISTS testimonials (id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT NOT NULL, initial TEXT DEFAULT "", avatarClass TEXT DEFAULT "", role TEXT DEFAULT "", date TEXT DEFAULT "", rating INTEGER DEFAULT 5, title TEXT DEFAULT "", text TEXT DEFAULT "", ownerReply TEXT DEFAULT "", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
     db.exec('CREATE TABLE IF NOT EXISTS gallery (id INTEGER PRIMARY KEY AUTOINCREMENT, src TEXT NOT NULL, alt TEXT DEFAULT "", sort_order INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
     db.exec('CREATE TABLE IF NOT EXISTS admin_users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
-    db.exec('CREATE TABLE IF NOT EXISTS newsletter_subscribers (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
 
     db.exec('CREATE TABLE IF NOT EXISTS tables (id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT NOT NULL UNIQUE, capacity INTEGER NOT NULL, location TEXT DEFAULT "", status TEXT DEFAULT "available", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
     db.exec('CREATE TABLE IF NOT EXISTS payments (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, transaction_id TEXT DEFAULT "", gross_amount INTEGER NOT NULL, status TEXT DEFAULT "pending", payment_type TEXT DEFAULT "", transaction_time TEXT DEFAULT "", snap_token TEXT DEFAULT "", snap_redirect_url TEXT DEFAULT "", created_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
@@ -175,7 +174,7 @@ function sanitize(str) {
 
 function resetData() {
     var db = getDb();
-    var tables = ['orders', 'reservations', 'contact_messages', 'testimonials', 'gallery', 'newsletter_subscribers', 'menu_items', 'tables', 'wa_numbers', 'payments', 'email_logs'];
+    var tables = ['orders', 'reservations', 'contact_messages', 'testimonials', 'gallery', 'menu_items', 'tables', 'wa_numbers', 'payments', 'email_logs'];
     tables.forEach(function (t) { db.exec('DELETE FROM ' + t); });
     seed(db);
     db.prepare('INSERT INTO wa_numbers (number, label, is_default, is_tester, is_active) VALUES (?, ?, ?, ?, ?)').run('6285174074352', 'Hyaku Ramen Official', 1, 0, 1);

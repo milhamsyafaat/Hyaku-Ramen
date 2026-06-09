@@ -34,7 +34,6 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/tables', require('./routes/tables'));
 app.use('/api/wa-numbers', require('./routes/wa-numbers'));

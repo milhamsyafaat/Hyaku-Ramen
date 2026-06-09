@@ -17,9 +17,9 @@ Express serves `frontend/` and `admin/` statically. No build step. No lint/test/
 
 ## Frontend
 
-Tailwind v3 CDN. Load order: `images.js` → `data.js` → `script.js`.  
-`images.js` provides `IMG_*`, `GAL_*`, `WA_NUMBER`, `WA_NUMBER_TESTER`.  
-`data.js` provides `MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS` (fallbacks when API down).  
+Tailwind v3 CDN. Script load order: `images.js` → `data.js` → `script.js`.  
+`images.js`: `IMG_*`, `GAL_*`, `WA_NUMBER`, `WA_NUMBER_TESTER`.  
+`data.js`: `MENU_DATA`, `GALLERY_DATA`, `TESTIMONIALS` (fallbacks when API is down).  
 DOM helpers: `$('#id')`, `qs()`, `qa()`. XSS-safe `esc()` in both `frontend/script.js` and `admin/app.js`.  
 POST helper: `apiPost(url, data)` returns JSON (or `{ok:true}`), throws on HTTP errors.
 
@@ -27,13 +27,13 @@ POST helper: `apiPost(url, data)` returns JSON (or `{ok:true}`), throws on HTTP 
 
 **DB** (`backend/db.js`): `node:sqlite` `DatabaseSync` (sync API). DB at `backend/data/hyaku.db`, auto-created + seeded on first start. Exports `getDb()`, `initialize()`, `validate()`, `sanitize()`, `resetData()`.
 
-**Rate limiting** (15-min windows): `/api/*` 100 req, `/api/auth/login` 5 req, `/api/{contact,reservations,orders}` 10 req.
+**Rate limiting** (15-min windows, production only): `/api/*` 100 req, `/api/auth/login` 5 req, `/api/{contact,reservations,orders}` 10 req. Admin routes (`/api/admin/*`) skip global limiter.
 
-**Routes**: `backend/routes/*.js` — 13 route files mounted in `backend/index.js`. Admin routes skip global rate limiter.
+**Routes**: `backend/routes/*.js` — 12 files mounted in `backend/index.js:30-41`.
 
-**JWT** (`backend/middleware/auth.js`): fails hard in production without `JWT_SECRET` env; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry. Admin app stores token as `admin_token` in localStorage.
+**JWT** (`backend/middleware/auth.js`): fails hard in production without `JWT_SECRET` env; dev fallback `'hyaku-ramen-dev-secret'`. 24h expiry (`backend/routes/auth.js:22`). Admin stores token as `admin_token` in localStorage.
 
-**Default admin**: `admin` / `admin123` (auto-seeded on first start in `backend/db.js:60`).
+**Default admin** (seeded at `backend/db.js:61`): `admin` / `admin123`. Startup message at `backend/index.js:74` echoes this.
 
 **.env** (`backend/.env`, gitignored): template exists but no `dotenv` loader — set vars in runtime environment.
 
@@ -43,17 +43,16 @@ POST helper: `apiPost(url, data)` returns JSON (or `{ok:true}`), throws on HTTP 
 
 ## Admin
 
-Single-page app, 822 lines, ES5. API wrapper: `api(path, options)` prepends `/api` and injects `authHeaders()` (reads `admin_token` from localStorage). No helper for POST — uses `fetch(API + '/auth/login', ...)` directly.
+ES5 SPA. API wrapper: `api(path, options)` prepends `/api` and injects `authHeaders()` (reads `admin_token` from localStorage). No POST helper — login uses `fetch(API + '/auth/login', ...)` directly. Dashboard polls `/api/admin/stats` every 30s.
 
 ## Gotchas
 
-- **Image URLs duplicated** in `frontend/images.js` and `backend/db.js` — same `IMG_*`/`GAL_*` vars duplicated across both. Update both.
-- **`href="tel:+6285174074352"` hardcoded** at `frontend/index.html:222,276` — update when changing WA number.
+- **Image URLs duplicated** in `frontend/images.js` and `backend/db.js` — same `IMG_*`/`GAL_*` vars in both. Always update both files.
+- **`href="tel:+6285174074352"` hardcoded** at `frontend/index.html:268` — update when changing WA number.
 - **Forms POST to `/api/*`** AND open WhatsApp via `openWaSelection()`. Fetches to `/api/wa-numbers/active` and `/api/config` are fire-and-forget (`.catch(function() {})`).
-- **Root `package-lock.json` is stale** (90 bytes) — `backend/package.json` is the real manifest.
-- **Midtrans Snap URL hardcoded to sandbox** in `frontend/script.js:729`; `MIDTRANS_IS_PRODUCTION` only affects server-side.
-- **`TODO.md` is stale** — says admin pw changed to `Hyakuadmin` but code still seeds `admin123` (`backend/db.js:60`).
-- **`.node-version`** enforces Node 22 (also in `backend/package.json` `engines`).
+- **Root `package-lock.json` is stale** (90 B, empty) — `backend/package.json` is the real manifest.
+- **Midtrans Snap URL hardcoded to sandbox** in `frontend/script.js:688`; `MIDTRANS_IS_PRODUCTION` only affects server-side.
+- **`TODO.md` is stale** — says admin pw changed to `Hyakuadmin` but code still seeds `admin123` (`backend/db.js:61`, `backend/index.js:74`).
 
 ## WhatsApp
 
@@ -61,7 +60,7 @@ Source of truth: `wa_numbers` table. Frontend fetches from `/api/config`; fallba
 
 ## localStorage keys
 
-`cart`, `admin_token` (JWT), `admin_user`, `theme` (dark mode), `saved` (bookmark), `newsletter_email`.
+`cart`, `admin_token` (JWT), `admin_user`, `theme` (dark mode).
 
 ## Deploy
 

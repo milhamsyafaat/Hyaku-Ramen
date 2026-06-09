@@ -210,18 +210,10 @@
         </section>
 
         <!-- ===== QUICK ACTIONS ===== -->
-        <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 scroll-animate" aria-label="Aksi cepat">
+        <section class="grid grid-cols-2 gap-3 scroll-animate" aria-label="Aksi cepat">
             <a href="https://www.google.com/maps/place/Hyaku+Ramen/@-6.359917,106.8170113,964m/data=!3m2!1e3!4b1!4m6!3m5!1s0x2e69ed967fc4b1db:0x23ce4811a5ed91f4!8m2!3d-6.3599223!4d106.8195862!16s%2Fg%2F11l1n29lrt?entry=ttu&g_ep=EgoyMDI2MDUxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
                 <i class="fas fa-route text-red-600 text-xl mb-1"></i>
                 <span class="text-xs font-medium">Rute</span>
-            </a>
-            <button id="saveBtn" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
-                <i id="saveIcon" class="far fa-bookmark text-red-600 text-xl mb-1"></i>
-                <span class="text-xs font-medium">Simpan</span>
-            </button>
-            <a href="tel:+6285174074352" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
-                <i class="fas fa-phone text-red-600 text-xl mb-1"></i>
-                <span class="text-xs font-medium">Hubungi</span>
             </a>
             <button id="shareBtn" class="flex flex-col items-center justify-center p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition shadow-sm text-center">
                 <i class="fas fa-share-alt text-red-600 text-xl mb-1"></i>
@@ -511,23 +503,6 @@
             </div>
         </section>
 
-        <!-- ===== NEWSLETTER ===== -->
-        <section id="newsletter" class="scroll-animate no-print" aria-label="Newsletter">
-            <div class="bg-gradient-to-br from-red-600 to-red-800 dark:from-red-900 dark:to-red-950 p-6 md:p-8 rounded-2xl shadow-sm text-white text-center">
-                <div class="max-w-md mx-auto space-y-3">
-                    <i class="fas fa-envelope-open-text text-3xl text-yellow-300"></i>
-                    <h2 class="text-xl font-bold">Dapatkan Info Promo Terbaru</h2>
-                    <p class="text-sm text-red-100">Daftar newsletter untuk mendapatkan info menu baru dan promo spesial.</p>
-                    <form id="newsletterForm" class="flex flex-col sm:flex-row gap-3 mt-3">
-                        <input type="email" id="newsletterEmail" placeholder="Masukkan email Anda" class="flex-1 rounded-xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
-                        <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-semibold px-5 py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
-                            <i class="fas fa-paper-plane"></i> Daftar
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </section>
-
         <!-- ===== KONTAK & FORM ===== -->
         <section id="kontak" class="scroll-animate" aria-label="Kontak">
             <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-5">
@@ -672,13 +647,25 @@
                 <p class="text-xs text-green-600 dark:text-green-400 mt-1">Silakan transfer ke rekening di bawah</p>
             </div>
             <div id="receiptInfo" class="space-y-2 text-sm mb-4">
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Nama</span>
-                    <span class="font-medium text-gray-800 dark:text-gray-200" id="receiptName">-</span>
+                <div id="receiptDisplayInfo" class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Nama</span>
+                        <span class="font-medium text-gray-800 dark:text-gray-200" id="receiptName">-</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">No. HP</span>
+                        <span class="font-medium text-gray-800 dark:text-gray-200" id="receiptPhone">-</span>
+                    </div>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500">No. HP</span>
-                    <span class="font-medium text-gray-800 dark:text-gray-200" id="receiptPhone">-</span>
+                <div id="receiptInputInfo" class="space-y-2 hidden">
+                    <div>
+                        <label class="text-gray-500 text-xs block mb-1">Nama <span class="text-red-500">*</span></label>
+                        <input id="receiptNameInput" type="text" placeholder="Nama Anda" class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div>
+                        <label class="text-gray-500 text-xs block mb-1">No. HP <span class="text-red-500">*</span></label>
+                        <input id="receiptPhoneInput" type="tel" placeholder="081234567890" class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
                 </div>
             </div>
             <div class="border-t border-gray-200 dark:border-gray-700 pt-3 mb-3">

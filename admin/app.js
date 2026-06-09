@@ -726,27 +726,27 @@ function loadSales() {
     var params = '?' + (from ? 'from=' + from : '') + (from && to ? '&' : '') + (to ? 'to=' + to : '');
     showLoading('#salesTable tbody');
     api('/admin/sales-recap' + params).then(function (d) {
-        var data = d.data || d;
-        if (!Array.isArray(data)) data = [];
-        var totalOrders = 0, totalRevenue = 0, totalCompleted = 0;
+        var orders = d.orders || [];
+        var stats = d.stats || {};
+        var statusBadge = { pending: 'bg-yellow-600', confirmed: 'bg-blue-600', completed: 'bg-green-600', cancelled: 'bg-red-600' };
         var tbody = document.querySelector('#salesTable tbody');
         tbody.innerHTML = '';
-        data.forEach(function (r) {
-            totalOrders += r.order_count || 0;
-            totalRevenue += r.revenue || 0;
-            totalCompleted += r.completed || 0;
+        orders.forEach(function (o) {
+            var items = [];
+            try { items = JSON.parse(o.items || '[]'); } catch (e) {}
+            var itemsStr = items.map(function (i) { return i.name + ' x' + i.qty; }).join(', ');
             var tr = document.createElement('tr');
             tr.className = 'border-b border-gray-700 hover:bg-gray-700/50';
-            tr.innerHTML = '<td class="py-2 px-3 text-sm">' + esc(r.date) + '</td><td class="py-2 px-3 text-right text-sm font-medium">' + (r.order_count || 0) + '</td><td class="py-2 px-3 text-right text-sm text-green-400">Rp ' + (r.revenue || 0).toLocaleString('id-ID') + '</td><td class="py-2 px-3 text-right text-xs text-yellow-400">' + (r.pending || 0) + '</td><td class="py-2 px-3 text-right text-xs text-blue-400">' + (r.confirmed || 0) + '</td><td class="py-2 px-3 text-right text-xs text-green-400">' + (r.completed || 0) + '</td><td class="py-2 px-3 text-right text-xs text-red-400">' + (r.cancelled || 0) + '</td>';
+            tr.innerHTML = '<td class="py-2 px-3 text-xs">#' + esc(o.id) + '</td><td class="py-2 px-3 text-xs max-w-[200px] truncate">' + esc(itemsStr) + '</td><td class="py-2 px-3 text-sm text-right">Rp ' + (o.total || 0).toLocaleString('id-ID') + '</td><td class="py-2 px-3 text-xs text-gray-400">' + esc(o.customer_name || '-') + '</td><td class="py-2 px-3 text-xs text-gray-400">' + esc(o.customer_phone || '-') + '</td><td class="py-2 px-3"><span class="' + esc(statusBadge[o.status] || 'bg-gray-600') + ' text-white text-xs px-2 py-0.5 rounded">' + esc(o.status) + '</span></td><td class="py-2 px-3 text-xs text-gray-400">' + esc(o.created_at) + '</td>';
             tbody.appendChild(tr);
         });
-        if (data.length === 0) {
+        if (orders.length === 0) {
             tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">Tidak ada data untuk periode ini</td></tr>';
         }
-        document.getElementById('salesTotalOrders').textContent = totalOrders;
-        document.getElementById('salesTotalRevenue').textContent = 'Rp ' + totalRevenue.toLocaleString('id-ID');
-        document.getElementById('salesAvgOrder').textContent = totalOrders ? 'Rp ' + Math.round(totalRevenue / totalOrders).toLocaleString('id-ID') : 'Rp 0';
-        document.getElementById('salesCompleted').textContent = totalCompleted;
+        document.getElementById('salesTotalOrders').textContent = stats.totalOrders || 0;
+        document.getElementById('salesTotalRevenue').textContent = 'Rp ' + (stats.totalRevenue || 0).toLocaleString('id-ID');
+        document.getElementById('salesAvgOrder').textContent = stats.totalOrders ? 'Rp ' + Math.round(stats.totalRevenue / stats.totalOrders).toLocaleString('id-ID') : 'Rp 0';
+        document.getElementById('salesCompleted').textContent = stats.totalCompleted || 0;
     }).catch(function () {
         document.querySelector('#salesTable tbody').innerHTML = '<tr><td colspan="7" class="py-8 text-center text-red-400">Gagal memuat data</td></tr>';
     });
